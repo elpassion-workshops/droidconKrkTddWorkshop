@@ -60,6 +60,13 @@ class LoginControllerTest {
         verify(view, times(1)).showLoginFailedError()
     }
 
+    @Test
+    fun shouldOpenNextScreenIfApiCallSucceed() {
+        whenever(api.login("login123", "password123")).thenReturn(Observable.just(Unit))
+        controller.onLogin("login123", "password123")
+        verify(view, times(1)).openNextScreen()
+    }
+
 }
 
 class LoginController(val api: Login.Api, val view: Login.View) {
@@ -67,7 +74,11 @@ class LoginController(val api: Login.Api, val view: Login.View) {
         if (login.isEmpty() || password.isEmpty()) {
             view.showEmptyCredentialError()
         } else {
-            api.login(login, password).subscribe({}, { view.showLoginFailedError() })
+            api.login(login, password).subscribe({
+                view.openNextScreen()
+            }, {
+                view.showLoginFailedError()
+            })
         }
     }
 }
@@ -80,5 +91,6 @@ interface Login {
     interface View {
         fun showEmptyCredentialError()
         fun showLoginFailedError()
+        fun openNextScreen()
     }
 }

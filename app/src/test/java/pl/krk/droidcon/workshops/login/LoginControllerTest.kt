@@ -18,18 +18,6 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldCallApiOnLoginWithCorrectLoginAndPassword() {
-        controller.onLogin("login", "password")
-        verify(api, times(1)).login("login", "password")
-    }
-
-    @Test
-    fun shouldCallApiOnLoginWithReallyCorrectLoginAndPassword() {
-        controller.onLogin("login123", "password123")
-        verify(api, times(1)).login("login123", "password123")
-    }
-
-    @Test
     fun shouldShowErrorWhenLoginIsEmpty() {
         controller.onLogin("", "password")
         verify(view, times(1)).showEmptyCredentialError()

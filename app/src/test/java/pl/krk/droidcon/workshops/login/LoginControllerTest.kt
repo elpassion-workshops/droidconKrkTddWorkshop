@@ -14,11 +14,18 @@ class LoginControllerTest {
         verify(api, times(1)).login("login", "password")
     }
 
+    @Test
+    fun shouldCallApiOnLoginWithReallyCorrectLoginAndPassword() {
+        val api = mock<Login.Api>()
+        LoginController(api).onLogin("login123", "password123")
+        verify(api, times(1)).login("login123", "password123")
+    }
+
 }
 
 class LoginController(val api: Login.Api) {
     fun onLogin(login: String, password: String) {
-        api.login("login", "password")
+        api.login(login, password)
     }
 }
 

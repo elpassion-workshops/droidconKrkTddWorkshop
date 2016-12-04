@@ -33,4 +33,9 @@ class LoginActivityTest {
     fun shouldHaveLoginButton() {
         onId(R.id.loginLoginButton).hasText(R.string.loginLoginButton)
     }
+
+    @Test
+    fun shouldHavePasswordInput() {
+        onId(R.id.loginPasswordInput).typeText("password").hasText("password")
+    }
 }

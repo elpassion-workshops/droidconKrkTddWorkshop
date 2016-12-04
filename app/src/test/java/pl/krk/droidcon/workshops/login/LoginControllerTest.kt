@@ -101,15 +101,19 @@ class LoginController(val api: Login.Api, val view: Login.View) {
         if (login.isEmpty() || password.isEmpty()) {
             view.showEmptyCredentialError()
         } else {
-            subscription = api.login(login, password)
-                    .doOnSubscribe { view.showLoader() }
-                    .doOnUnsubscribe { view.hideLoader() }
-                    .subscribe({
-                        view.openNextScreen()
-                    }, {
-                        view.showLoginFailedError()
-                    })
+            callApi(login, password)
         }
+    }
+
+    private fun callApi(login: String, password: String) {
+        subscription = api.login(login, password)
+                .doOnSubscribe { view.showLoader() }
+                .doOnUnsubscribe { view.hideLoader() }
+                .subscribe({
+                    view.openNextScreen()
+                }, {
+                    view.showLoginFailedError()
+                })
     }
 
     fun onDestroy() {

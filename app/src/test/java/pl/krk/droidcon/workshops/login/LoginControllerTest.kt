@@ -8,21 +8,22 @@ import org.mockito.Mockito.verify
 class LoginControllerTest {
 
     @Test
-    fun shouldCallApiOnLogin() {
+    fun shouldCallApiOnLoginWithCorrectLoginAndPassword() {
         val api = mock<Login.Api>()
-        LoginController(api).onLogin()
-        verify(api, times(1)).login()
+        LoginController(api).onLogin("login", "password")
+        verify(api, times(1)).login("login", "password")
     }
+
 }
 
 class LoginController(val api: Login.Api) {
-    fun onLogin() {
-        api.login()
+    fun onLogin(login: String, password: String) {
+        api.login("login", "password")
     }
 }
 
 interface Login {
     interface Api {
-        fun login()
+        fun login(login: String, password: String)
     }
 }

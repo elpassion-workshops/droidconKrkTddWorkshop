@@ -2,4 +2,5 @@
     <string name="app_name">Workshops</string>
     <string name="loginLoginHeader">Login</string>
     <string name="loginPasswordHeader">Password</string>
+    <string name="loginLoginButton">Login</string>
 </resources>

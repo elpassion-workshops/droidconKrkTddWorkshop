@@ -28,4 +28,9 @@ class LoginActivityTest {
     fun shouldHavePasswordHeader() {
         onId(R.id.loginPasswordHeader).hasText(R.string.loginPasswordHeader)
     }
+
+    @Test
+    fun shouldHaveLoginButton() {
+        onId(R.id.loginLoginButton).hasText(R.string.loginLoginButton)
+    }
 }

@@ -43,4 +43,11 @@ class LoginActivityTest {
         onId(R.id.loginLoginButton).click()
         onText(R.string.loginEmptyCredentialError).isDisplayed()
     }
+
+    @Test
+    fun shouldShowErrorWhenTryToLoginWithEmptyPassword() {
+        onId(R.id.loginLoginInput).typeText("login")
+        onId(R.id.loginLoginButton).click()
+        onText(R.string.loginEmptyCredentialError).isDisplayed()
+    }
 }

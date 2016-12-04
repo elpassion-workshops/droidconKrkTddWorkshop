@@ -43,14 +43,14 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowErrorWhenApiCallFails() {
-        whenever(api.login("login", "password")).thenReturn(Observable.error(RuntimeException()))
+        stubApiToReturnOnCredentials(login = "login", password = "password", returnValue = Observable.error(RuntimeException()))
         loginWithCredentials(login = "login", password = "password")
         verify(view, times(1)).showLoginFailedError()
     }
 
     @Test
     fun shouldOpenNextScreenIfApiCallSucceed() {
-        whenever(api.login("login123", "password123")).thenReturn(Observable.just(Unit))
+        stubApiToReturnOnCredentials(login = "login123", password = "password123", returnValue = Observable.just(Unit))
         loginWithCredentials(login = "login123", password = "password123")
         verify(view, times(1)).openNextScreen()
     }
@@ -63,9 +63,13 @@ class LoginControllerTest {
 
     @Test
     fun shouldHideLoaderOnApiCallEnd() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        stubApiToReturnOnCredentials(returnValue = Observable.just(Unit))
         loginWithCredentials()
         verify(view, times(1)).hideLoader()
+    }
+
+    private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<Unit>) {
+        whenever(api.login(login, password)).thenReturn(returnValue)
     }
 
     private fun loginWithCredentials(login: String = "login", password: String = "password") {

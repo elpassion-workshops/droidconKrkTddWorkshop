@@ -61,6 +61,13 @@ class LoginControllerTest {
         verify(view, times(1)).showLoader()
     }
 
+    @Test
+    fun shouldHideLoaderOnApiCallEnd() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        loginWithCredentials()
+        verify(view, times(1)).hideLoader()
+    }
+
     private fun loginWithCredentials(login: String = "login", password: String = "password") {
         controller.onLogin(login, password)
     }
@@ -74,6 +81,7 @@ class LoginController(val api: Login.Api, val view: Login.View) {
         } else {
             api.login(login, password)
                     .doOnSubscribe { view.showLoader() }
+                    .doOnUnsubscribe { view.hideLoader() }
                     .subscribe({
                         view.openNextScreen()
                     }, {
@@ -93,5 +101,6 @@ interface Login {
         fun showLoginFailedError()
         fun openNextScreen()
         fun showLoader()
+        fun hideLoader()
     }
 }

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Workshops</string>
     <string name="loginLoginHeader">Login</string>
+    <string name="loginPasswordHeader">Password</string>
 </resources>

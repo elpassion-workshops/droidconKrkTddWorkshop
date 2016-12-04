@@ -1,9 +1,7 @@
 package pl.krk.droidcon.workshops.login
 
 import android.support.test.rule.ActivityTestRule
-import com.elpassion.android.commons.espresso.hasText
-import com.elpassion.android.commons.espresso.onId
-import com.elpassion.android.commons.espresso.typeText
+import com.elpassion.android.commons.espresso.*
 import org.junit.Rule
 import org.junit.Test
 import pl.krk.droidcon.workshops.R
@@ -37,5 +35,12 @@ class LoginActivityTest {
     @Test
     fun shouldHavePasswordInput() {
         onId(R.id.loginPasswordInput).typeText("password").hasText("password")
+    }
+
+    @Test
+    fun shouldShowErrorWhenTryToLoginWithEmptyLogin() {
+        onId(R.id.loginPasswordInput).typeText("password")
+        onId(R.id.loginLoginButton).click()
+        onText(R.string.loginEmptyCredentialError).isDisplayed()
     }
 }

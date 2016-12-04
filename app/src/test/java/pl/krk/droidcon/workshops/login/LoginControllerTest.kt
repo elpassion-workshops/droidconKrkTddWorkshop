@@ -28,7 +28,7 @@ class LoginControllerTest {
     @Test
     fun shouldShowErrorWhenLoginIsEmpty() {
         controller.onLogin("", "password")
-        verify(view, times(1)).showLoginEmptyError()
+        verify(view, times(1)).showEmptyCredentialError()
     }
 
     @Test
@@ -37,12 +37,21 @@ class LoginControllerTest {
         verify(api, never()).login(any(), any())
     }
 
+    @Test
+    fun shouldShowErrorWhenPasswordIsEmpty() {
+        controller.onLogin("login", "")
+        verify(view, times(1)).showEmptyCredentialError()
+    }
+
 }
 
 class LoginController(val api: Login.Api, val view: Login.View) {
     fun onLogin(login: String, password: String) {
+        if(password.isEmpty()){
+            view.showEmptyCredentialError()
+        }
         if (login.isEmpty()) {
-            view.showLoginEmptyError()
+            view.showEmptyCredentialError()
         } else {
             api.login(login, password)
         }
@@ -55,6 +64,6 @@ interface Login {
     }
 
     interface View {
-        fun showLoginEmptyError()
+        fun showEmptyCredentialError()
     }
 }

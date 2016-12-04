@@ -5,7 +5,6 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.verify
 import rx.Observable
-import rx.Subscription
 
 class LoginControllerTest {
 
@@ -91,46 +90,4 @@ class LoginControllerTest {
         controller.onLogin(login, password)
     }
 
-}
-
-class LoginController(val api: Login.Api, val view: Login.View) {
-
-    private var subscription: Subscription? = null
-
-    fun onLogin(login: String, password: String) {
-        if (login.isEmpty() || password.isEmpty()) {
-            view.showEmptyCredentialError()
-        } else {
-            callApi(login, password)
-        }
-    }
-
-    private fun callApi(login: String, password: String) {
-        subscription = api.login(login, password)
-                .doOnSubscribe { view.showLoader() }
-                .doOnUnsubscribe { view.hideLoader() }
-                .subscribe({
-                    view.openNextScreen()
-                }, {
-                    view.showLoginFailedError()
-                })
-    }
-
-    fun onDestroy() {
-        subscription?.unsubscribe()
-    }
-}
-
-interface Login {
-    interface Api {
-        fun login(login: String, password: String): Observable<Unit>
-    }
-
-    interface View {
-        fun showEmptyCredentialError()
-        fun showLoginFailedError()
-        fun openNextScreen()
-        fun showLoader()
-        fun hideLoader()
-    }
 }

@@ -3,6 +3,7 @@ package pl.krk.droidcon.workshops.login
 import android.support.test.rule.ActivityTestRule
 import com.elpassion.android.commons.espresso.hasText
 import com.elpassion.android.commons.espresso.onId
+import com.elpassion.android.commons.espresso.typeText
 import org.junit.Rule
 import org.junit.Test
 import pl.krk.droidcon.workshops.R
@@ -16,5 +17,10 @@ class LoginActivityTest {
     @Test
     fun shouldHaveLoginHeader() {
         onId(R.id.loginLoginHeader).hasText(R.string.loginLoginHeader)
+    }
+
+    @Test
+    fun shouldHaveTypedLogin() {
+        onId(R.id.loginLoginInput).typeText("login").hasText("login")
     }
 }

@@ -5,6 +5,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.verify
 import rx.Observable
+import rx.Subscription
 
 class LoginControllerTest {
 
@@ -76,6 +77,12 @@ class LoginControllerTest {
         verify(view, times(1)).hideLoader()
     }
 
+    @Test
+    fun shouldNotHideLoaderOnDestroyIfCallHasNotBeenStarted() {
+        controller.onDestroy()
+        verify(view, never()).hideLoader()
+    }
+
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<Unit>) {
         whenever(api.login(login, password)).thenReturn(returnValue)
     }
@@ -87,11 +94,14 @@ class LoginControllerTest {
 }
 
 class LoginController(val api: Login.Api, val view: Login.View) {
+
+    private var subscription: Subscription? = null
+
     fun onLogin(login: String, password: String) {
         if (login.isEmpty() || password.isEmpty()) {
             view.showEmptyCredentialError()
         } else {
-            api.login(login, password)
+            subscription = api.login(login, password)
                     .doOnSubscribe { view.showLoader() }
                     .doOnUnsubscribe { view.hideLoader() }
                     .subscribe({
@@ -103,7 +113,7 @@ class LoginController(val api: Login.Api, val view: Login.View) {
     }
 
     fun onDestroy() {
-        view.hideLoader()
+        subscription?.unsubscribe()
     }
 }
 

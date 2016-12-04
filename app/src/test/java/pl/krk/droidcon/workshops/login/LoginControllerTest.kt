@@ -68,6 +68,14 @@ class LoginControllerTest {
         verify(view, times(1)).hideLoader()
     }
 
+    @Test
+    fun shouldHideLoaderOnDestroyIfCallIsStillInProgress() {
+        stubApiToReturnOnCredentials(returnValue = Observable.never())
+        loginWithCredentials()
+        controller.onDestroy()
+        verify(view, times(1)).hideLoader()
+    }
+
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<Unit>) {
         whenever(api.login(login, password)).thenReturn(returnValue)
     }
@@ -92,6 +100,10 @@ class LoginController(val api: Login.Api, val view: Login.View) {
                         view.showLoginFailedError()
                     })
         }
+    }
+
+    fun onDestroy() {
+        view.hideLoader()
     }
 }
 

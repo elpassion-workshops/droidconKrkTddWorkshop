@@ -1,6 +1,8 @@
 package pl.krk.droidcon.workshops.login
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.times
 import org.junit.Test
 import org.mockito.Mockito.verify
@@ -29,14 +31,21 @@ class LoginControllerTest {
         verify(view, times(1)).showLoginEmptyError()
     }
 
+    @Test
+    fun shouldNotCallApiIfLoginIsEmpty() {
+        controller.onLogin("", "password")
+        verify(api, never()).login(any(), any())
+    }
+
 }
 
 class LoginController(val api: Login.Api, val view: Login.View) {
     fun onLogin(login: String, password: String) {
-        if (login.isEmpty()){
+        if (login.isEmpty()) {
             view.showLoginEmptyError()
+        } else {
+            api.login(login, password)
         }
-        api.login(login, password)
     }
 }
 

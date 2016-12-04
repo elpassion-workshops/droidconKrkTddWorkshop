@@ -22,7 +22,9 @@
         android:layout_height="wrap_content"
         android:text="@string/loginPasswordHeader" />
 
+
     <Button
+        android:id="@+id/loginLoginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/loginLoginButton"/>

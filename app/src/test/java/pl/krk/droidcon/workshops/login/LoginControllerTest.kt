@@ -19,46 +19,50 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowErrorWhenLoginIsEmpty() {
-        controller.onLogin("", "password")
+        loginWithCredentials(login = "")
         verify(view, times(1)).showEmptyCredentialError()
     }
 
     @Test
     fun shouldNotCallApiIfLoginIsEmpty() {
-        controller.onLogin("", "password")
+        loginWithCredentials(login = "")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldShowErrorWhenPasswordIsEmpty() {
-        controller.onLogin("login", "")
+        loginWithCredentials(password = "")
         verify(view, times(1)).showEmptyCredentialError()
     }
 
     @Test
     fun shouldNotCallApiWhenPasswordIsEmpty() {
-        controller.onLogin("login", "")
+        loginWithCredentials(password = "")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldShowErrorWhenApiCallFails() {
         whenever(api.login("login", "password")).thenReturn(Observable.error(RuntimeException()))
-        controller.onLogin("login", "password")
+        loginWithCredentials(login = "login", password = "password")
         verify(view, times(1)).showLoginFailedError()
     }
 
     @Test
     fun shouldOpenNextScreenIfApiCallSucceed() {
         whenever(api.login("login123", "password123")).thenReturn(Observable.just(Unit))
-        controller.onLogin("login123", "password123")
+        loginWithCredentials(login = "login123", password = "password123")
         verify(view, times(1)).openNextScreen()
     }
 
     @Test
     fun shouldShowLoaderOnApiCallStart() {
-        controller.onLogin("login", "password")
+        loginWithCredentials()
         verify(view, times(1)).showLoader()
+    }
+
+    private fun loginWithCredentials(login: String = "login", password: String = "password") {
+        controller.onLogin(login, password)
     }
 
 }

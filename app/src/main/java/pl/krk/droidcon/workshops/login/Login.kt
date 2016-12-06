@@ -1,5 +1,6 @@
 package pl.krk.droidcon.workshops.login
 
+import pl.krk.droidcon.workshops.Provider
 import rx.Observable
 
 interface Login {
@@ -15,4 +16,8 @@ interface Login {
         fun hideLoader()
         fun showInvalidEmailError()
     }
+
+    object ApiProvider : Provider<Api>({
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    })
 }

@@ -4,17 +4,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import pl.krk.droidcon.workshops.R
-import rx.Observable
 
 class LoginActivity : AppCompatActivity(), Login.View {
     private val controller by lazy {
-        LoginController(object : Login.Api {
-            override fun login(login: String, password: String): Observable<User> {
-                throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        }, this, object : UserSharedPreferences {
+        LoginController(Login.ApiProvider.get(), this, object : UserSharedPreferences {
             override fun saveUser(user: User) {
-                throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
         })
     }
@@ -28,11 +22,9 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun hideLoader() {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showLoader() {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun openNextScreen() {
@@ -40,7 +32,7 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun showLoginFailedError() {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        loginErrorMessage.setText(R.string.loginCallFailedError)
     }
 
     override fun showEmptyCredentialError() {

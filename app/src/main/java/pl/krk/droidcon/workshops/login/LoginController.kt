@@ -3,7 +3,7 @@ package pl.krk.droidcon.workshops.login
 import rx.Subscription
 import java.util.regex.Pattern
 
-class LoginController(val api: Login.Api, val view: Login.View) {
+class LoginController(val api: Login.Api, val view: Login.View, val sharedPreferences: UserSharedPreferences) {
 
     private var subscription: Subscription? = null
 
@@ -21,6 +21,7 @@ class LoginController(val api: Login.Api, val view: Login.View) {
         subscription = api.login(login, password)
                 .doOnSubscribe { view.showLoader() }
                 .doOnUnsubscribe { view.hideLoader() }
+                .doOnNext { sharedPreferences.saveUser(Unit) }
                 .subscribe({
                     view.openNextScreen()
                 }, {

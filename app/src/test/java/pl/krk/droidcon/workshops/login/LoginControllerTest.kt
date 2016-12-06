@@ -10,7 +10,8 @@ class LoginControllerTest {
 
     private val api = mock<Login.Api>()
     private val view = mock<Login.View>()
-    private val controller = LoginController(api, view)
+    private val sharedPreferences: UserSharedPreferences = mock()
+    private val controller = LoginController(api, view, sharedPreferences)
 
     @Before
     fun setUp() {
@@ -98,6 +99,14 @@ class LoginControllerTest {
     fun shouldShowInvalidEmailErrorWhenEmailContainsAtSignAndStillIsInvalid() {
         loginWithCredentials("invalidEmail@@", "password")
         verify(view).showInvalidEmailError()
+    }
+
+    @Test
+    fun shouldSaveReturnedUserFromApiToSharedPreferences() {
+        stubApiToReturnOnCredentials(returnValue = Observable.just(Unit))
+        loginWithCredentials()
+        val user = Unit
+        verify(sharedPreferences, times(1)).saveUser(user)
     }
 
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<Unit>) {

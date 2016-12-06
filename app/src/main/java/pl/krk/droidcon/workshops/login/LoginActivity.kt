@@ -12,7 +12,11 @@ class LoginActivity : AppCompatActivity(), Login.View {
             override fun login(login: String, password: String): Observable<Unit> {
                 throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
-        }, this)
+        }, this, object : UserSharedPreferences {
+            override fun saveUser(user: Unit) {
+                throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -2,15 +2,29 @@ package pl.krk.droidcon.workshops.login
 
 import android.support.test.rule.ActivityTestRule
 import com.elpassion.android.commons.espresso.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pl.krk.droidcon.workshops.R
+import rx.Observable.error
+import rx.Observable.never
 
 class LoginActivityTest {
 
     @Rule
     @JvmField
     val rule = ActivityTestRule(LoginActivity::class.java)
+
+    @Before
+    fun setUp() {
+        Login.ApiProvider.override = {
+            mock<Login.Api> { on { login(any(), any()) } doReturn never() }
+        }
+    }
 
     @Test
     fun shouldHaveLoginHeader() {
@@ -57,5 +71,20 @@ class LoginActivityTest {
         onId(R.id.loginPasswordInput).typeText("password")
         onId(R.id.loginLoginButton).click()
         onText(R.string.invalidEmailError).isDisplayed()
+    }
+
+    @Test
+    fun shouldShowErrorWhenApiCallFails() {
+        val loginApi = mock<Login.Api>()
+        whenever(loginApi.login(any(), any())) doReturn error(RuntimeException())
+        Login.ApiProvider.override = { loginApi }
+        login()
+        onText(R.string.loginCallFailedError).isDisplayed()
+    }
+
+    private fun login() {
+        onId(R.id.loginLoginInput).typeText("email@test.pl")
+        onId(R.id.loginPasswordInput).typeText("password")
+        onId(R.id.loginLoginButton).click()
     }
 }

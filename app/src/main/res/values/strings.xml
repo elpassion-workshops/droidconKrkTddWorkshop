@@ -5,4 +5,5 @@
     <string name="loginLoginButton">Login</string>
     <string name="loginEmptyCredentialError">Login or password is empty!</string>
     <string name="invalidEmailError">Email is incorrect.</string>
+    <string name="loginCallFailedError">Login call failed</string>
 </resources>

@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun showInvalidEmailError() {
-
+        loginErrorMessage.setText(R.string.invalidEmailError)
     }
 
 

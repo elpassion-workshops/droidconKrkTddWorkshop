@@ -7,7 +7,6 @@ import pl.krk.droidcon.workshops.R
 import rx.Observable
 
 class LoginActivity : AppCompatActivity(), Login.View {
-
     private val controller by lazy {
         LoginController(object : Login.Api {
             override fun login(login: String, password: String): Observable<Unit> {
@@ -42,6 +41,10 @@ class LoginActivity : AppCompatActivity(), Login.View {
 
     override fun showEmptyCredentialError() {
         loginErrorMessage.setText(R.string.loginEmptyCredentialError)
+    }
+
+    override fun showInvalidEmailError() {
+
     }
 
 

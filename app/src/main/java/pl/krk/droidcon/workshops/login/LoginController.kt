@@ -7,9 +7,10 @@ class LoginController(val api: Login.Api, val view: Login.View) {
     private var subscription: Subscription? = null
 
     fun onLogin(login: String, password: String) {
-        view.showInvalidEmailError()
         if (login.isEmpty() || password.isEmpty()) {
             view.showEmptyCredentialError()
+        } else if (!login.contains("@")) {
+            view.showInvalidEmailError()
         } else {
             callApi(login, password)
         }

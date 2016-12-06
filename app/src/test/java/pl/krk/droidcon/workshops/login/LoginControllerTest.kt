@@ -43,15 +43,15 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowErrorWhenApiCallFails() {
-        stubApiToReturnOnCredentials(login = "login", password = "password", returnValue = Observable.error(RuntimeException()))
-        loginWithCredentials(login = "login", password = "password")
+        stubApiToReturnOnCredentials(login = "login@", password = "password", returnValue = Observable.error(RuntimeException()))
+        loginWithCredentials(login = "login@", password = "password")
         verify(view, times(1)).showLoginFailedError()
     }
 
     @Test
     fun shouldOpenNextScreenIfApiCallSucceed() {
-        stubApiToReturnOnCredentials(login = "login123", password = "password123", returnValue = Observable.just(Unit))
-        loginWithCredentials(login = "login123", password = "password123")
+        stubApiToReturnOnCredentials(login = "login123@", password = "password123", returnValue = Observable.just(Unit))
+        loginWithCredentials(login = "login123@", password = "password123")
         verify(view, times(1)).openNextScreen()
     }
 
@@ -84,15 +84,21 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowInvalidEmailErrorWhenEmailIsNotValid() {
-        controller.onLogin("invalidEmail@@.pl","password")
+        controller.onLogin("invalidEmail.pl", "password")
         verify(view).showInvalidEmailError()
+    }
+
+    @Test
+    fun shouldNotCallApiWhenEmailIsInvalid() {
+        controller.onLogin("invalidEmail", "password")
+        verify(api, never()).login(any(), any())
     }
 
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<Unit>) {
         whenever(api.login(login, password)).thenReturn(returnValue)
     }
 
-    private fun loginWithCredentials(login: String = "login", password: String = "password") {
+    private fun loginWithCredentials(login: String = "login@", password: String = "password") {
         controller.onLogin(login, password)
     }
 

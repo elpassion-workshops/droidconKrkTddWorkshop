@@ -84,19 +84,19 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowInvalidEmailErrorWhenEmailIsNotValid() {
-        controller.onLogin("invalidEmail.pl", "password")
+        loginWithCredentials("invalidEmail.pl", "password")
         verify(view).showInvalidEmailError()
     }
 
     @Test
     fun shouldNotCallApiWhenEmailIsInvalid() {
-        controller.onLogin("invalidEmail", "password")
+        loginWithCredentials("invalidEmail", "password")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldShowInvalidEmailErrorWhenEmailContainsAtSignAndStillIsInvalid() {
-        controller.onLogin("invalidEmail@@", "password")
+        loginWithCredentials("invalidEmail@@", "password")
         verify(view).showInvalidEmailError()
     }
 

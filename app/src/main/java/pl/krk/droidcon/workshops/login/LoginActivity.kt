@@ -9,11 +9,11 @@ import rx.Observable
 class LoginActivity : AppCompatActivity(), Login.View {
     private val controller by lazy {
         LoginController(object : Login.Api {
-            override fun login(login: String, password: String): Observable<Unit> {
+            override fun login(login: String, password: String): Observable<User> {
                 throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
         }, this, object : UserSharedPreferences {
-            override fun saveUser(user: Unit) {
+            override fun saveUser(user: User) {
                 throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
         })

@@ -1,23 +1,32 @@
 package pl.krk.droidcon.workshops.login
 
+import android.app.Activity
+import android.support.test.espresso.intent.Intents
+import android.support.test.espresso.intent.matcher.IntentMatchers
 import android.support.test.rule.ActivityTestRule
 import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import org.hamcrest.CoreMatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import pl.krk.droidcon.workshops.InitIntentsRule
 import pl.krk.droidcon.workshops.R
-import rx.Observable.error
-import rx.Observable.never
+import pl.krk.droidcon.workshops.next.NextScreenActivity
+import rx.Observable.*
 
 class LoginActivityTest {
 
     @Rule
     @JvmField
     val rule = ActivityTestRule(LoginActivity::class.java)
+
+    @Rule
+    @JvmField
+    val intentsRule = InitIntentsRule()
 
     @Before
     fun setUp() {
@@ -82,9 +91,21 @@ class LoginActivityTest {
         onText(R.string.loginCallFailedError).isDisplayed()
     }
 
+    @Test
+    fun shouldOpenNextScreenWhenCallToApiSucceed() {
+        val loginApi = mock<Login.Api>()
+        whenever(loginApi.login(any(), any())) doReturn just(User(1))
+        Login.ApiProvider.override = { loginApi }
+
+        login()
+
+        checkIntent(NextScreenActivity::class.java)
+    }
+
     private fun login() {
         onId(R.id.loginLoginInput).typeText("email@test.pl")
         onId(R.id.loginPasswordInput).typeText("password")
         onId(R.id.loginLoginButton).click()
     }
 }
+

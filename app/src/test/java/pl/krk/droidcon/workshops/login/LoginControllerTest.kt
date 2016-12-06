@@ -51,7 +51,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldOpenNextScreenIfApiCallSucceed() {
-        stubApiToReturnOnCredentials(login = "login1@test.pl", password = "password123", returnValue = Observable.just(User(1)))
+        stubApiToReturnOnCredentials(login = "login1@test.pl", password = "password123", returnValue = Observable.just(createUser()))
         loginWithCredentials(login = "login1@test.pl", password = "password123")
         verify(view, times(1)).openNextScreen()
     }
@@ -103,10 +103,12 @@ class LoginControllerTest {
 
     @Test
     fun shouldSaveUserWithId_1_ToSharedPreferencesIfUserWithThisId() {
-        stubApiToReturnOnCredentials(returnValue = Observable.just(User(id = 1)))
+        stubApiToReturnOnCredentials(returnValue = Observable.just(createUser()))
         loginWithCredentials()
-        verify(sharedPreferences, times(1)).saveUser(User(id = 1))
+        verify(sharedPreferences, times(1)).saveUser(createUser())
     }
+
+    private fun createUser() = User(1)
 
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<User>) {
         whenever(api.login(login, password)).thenReturn(returnValue)

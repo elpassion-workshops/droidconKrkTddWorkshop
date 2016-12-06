@@ -17,7 +17,6 @@ class LoginController(val api: Login.Api, val view: Login.View) {
         }
     }
 
-
     private fun callApi(login: String, password: String) {
         subscription = api.login(login, password)
                 .doOnSubscribe { view.showLoader() }

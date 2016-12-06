@@ -1,15 +1,11 @@
 package pl.krk.droidcon.workshops.login
 
-import android.app.Activity
-import android.support.test.espresso.intent.Intents
-import android.support.test.espresso.intent.matcher.IntentMatchers
 import android.support.test.rule.ActivityTestRule
 import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.hamcrest.CoreMatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -18,7 +14,9 @@ import pl.krk.droidcon.workshops.R
 import pl.krk.droidcon.workshops.next.NextScreenActivity
 import rx.Observable.*
 
-class LoginActivityTest {
+class LoginActivityTest() {
+
+    private val loginApi = mock<Login.Api> { on { login(any(), any()) } doReturn never() }
 
     @Rule
     @JvmField
@@ -30,9 +28,7 @@ class LoginActivityTest {
 
     @Before
     fun setUp() {
-        Login.ApiProvider.override = {
-            mock<Login.Api> { on { login(any(), any()) } doReturn never() }
-        }
+        Login.ApiProvider.override = { loginApi }
     }
 
     @Test
@@ -84,21 +80,15 @@ class LoginActivityTest {
 
     @Test
     fun shouldShowErrorWhenApiCallFails() {
-        val loginApi = mock<Login.Api>()
         whenever(loginApi.login(any(), any())) doReturn error(RuntimeException())
-        Login.ApiProvider.override = { loginApi }
         login()
         onText(R.string.loginCallFailedError).isDisplayed()
     }
 
     @Test
     fun shouldOpenNextScreenWhenCallToApiSucceed() {
-        val loginApi = mock<Login.Api>()
         whenever(loginApi.login(any(), any())) doReturn just(User(1))
-        Login.ApiProvider.override = { loginApi }
-
         login()
-
         checkIntent(NextScreenActivity::class.java)
     }
 

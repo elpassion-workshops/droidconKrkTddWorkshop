@@ -51,7 +51,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldOpenNextScreenIfApiCallSucceed() {
-        stubApiToReturnOnCredentials(login = "login1@test.pl", password = "password123", returnValue = Observable.just(Unit))
+        stubApiToReturnOnCredentials(login = "login1@test.pl", password = "password123", returnValue = Observable.just(User(1)))
         loginWithCredentials(login = "login1@test.pl", password = "password123")
         verify(view, times(1)).openNextScreen()
     }
@@ -64,7 +64,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldHideLoaderOnApiCallEnd() {
-        stubApiToReturnOnCredentials(returnValue = Observable.just(Unit))
+        stubApiToReturnOnCredentials(returnValue = Observable.empty())
         loginWithCredentials()
         verify(view, times(1)).hideLoader()
     }
@@ -102,14 +102,13 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldSaveReturnedUserFromApiToSharedPreferences() {
-        stubApiToReturnOnCredentials(returnValue = Observable.just(Unit))
+    fun shouldSaveUserWithId_1_ToSharedPreferencesIfUserWithThisId() {
+        stubApiToReturnOnCredentials(returnValue = Observable.just(User(id = 1)))
         loginWithCredentials()
-        val user = Unit
-        verify(sharedPreferences, times(1)).saveUser(user)
+        verify(sharedPreferences, times(1)).saveUser(User(id = 1))
     }
 
-    private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<Unit>) {
+    private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<User>) {
         whenever(api.login(login, password)).thenReturn(returnValue)
     }
 

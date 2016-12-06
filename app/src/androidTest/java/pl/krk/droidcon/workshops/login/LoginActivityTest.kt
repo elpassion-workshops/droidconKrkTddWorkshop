@@ -50,4 +50,12 @@ class LoginActivityTest {
         onId(R.id.loginLoginButton).click()
         onText(R.string.loginEmptyCredentialError).isDisplayed()
     }
+
+    @Test
+    fun shouldShowInvalidEmailErrorWhenEmailIsInvalid() {
+        onId(R.id.loginLoginInput).typeText("login")
+        onId(R.id.loginPasswordInput).typeText("password")
+        onId(R.id.loginLoginButton).click()
+        onText(R.string.invalidEmailError).isDisplayed()
+    }
 }

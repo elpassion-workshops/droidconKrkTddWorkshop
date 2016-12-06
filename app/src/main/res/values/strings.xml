@@ -4,4 +4,5 @@
     <string name="loginPasswordHeader">Password</string>
     <string name="loginLoginButton">Login</string>
     <string name="loginEmptyCredentialError">Login or password is empty!</string>
+    <string name="invalidEmailError">Email is incorrect.</string>
 </resources>

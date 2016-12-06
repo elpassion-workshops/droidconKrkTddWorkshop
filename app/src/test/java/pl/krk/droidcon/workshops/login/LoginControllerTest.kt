@@ -82,6 +82,12 @@ class LoginControllerTest {
         verify(view, never()).hideLoader()
     }
 
+    @Test
+    fun shouldShowInvalidEmailErrorWhenEmailIsNotValid() {
+        controller.onLogin("invalidEmail@@.pl","password")
+        verify(view).showInvalidEmailError()
+    }
+
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<Unit>) {
         whenever(api.login(login, password)).thenReturn(returnValue)
     }

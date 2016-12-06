@@ -13,5 +13,6 @@ interface Login {
         fun openNextScreen()
         fun showLoader()
         fun hideLoader()
+        fun showInvalidEmailError()
     }
 }

@@ -21,7 +21,7 @@ class LoginController(val api: Login.Api, val view: Login.View, val sharedPrefer
         subscription = api.login(login, password)
                 .doOnSubscribe { view.showLoader() }
                 .doOnUnsubscribe { view.hideLoader() }
-                .doOnNext { sharedPreferences.saveUser(User(id = 1)) }
+                .doOnNext { sharedPreferences.saveUser(it) }
                 .subscribe({
                     view.openNextScreen()
                 }, {

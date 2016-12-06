@@ -103,12 +103,19 @@ class LoginControllerTest {
 
     @Test
     fun shouldSaveUserWithId_1_ToSharedPreferencesIfUserWithThisId() {
-        stubApiToReturnOnCredentials(returnValue = Observable.just(createUser()))
+        stubApiToReturnOnCredentials(returnValue = Observable.just(createUser(id = 1)))
         loginWithCredentials()
-        verify(sharedPreferences, times(1)).saveUser(createUser())
+        verify(sharedPreferences, times(1)).saveUser(createUser(id = 1))
     }
 
-    private fun createUser() = User(1)
+    @Test
+    fun shouldReallySaveToSharedPreferencesUserFromApi() {
+        stubApiToReturnOnCredentials(returnValue = Observable.just(createUser(id = 2)))
+        loginWithCredentials()
+        verify(sharedPreferences, times(1)).saveUser(createUser(id = 2))
+    }
+
+    private fun createUser(id: Int = 1) = User(id)
 
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<User>) {
         whenever(api.login(login, password)).thenReturn(returnValue)

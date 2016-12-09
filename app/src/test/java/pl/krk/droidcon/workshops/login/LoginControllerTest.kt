@@ -11,11 +11,13 @@ class LoginControllerTest {
     private val api = mock<Login.Api>()
     private val view = mock<Login.View>()
     private val sharedPreferences: UserSharedPreferences = mock()
-    private val controller = LoginController(api, view, sharedPreferences)
+    private val facebook = mock<FacebookLoginButtonProvider>()
+    private val controller = LoginController(api, view, sharedPreferences, facebook)
 
     @Before
     fun setUp() {
         whenever(api.login(any(), any())).thenReturn(Observable.never())
+        whenever(api.loginWithFacebook(any())).thenReturn(Observable.never())
     }
 
     @Test
@@ -116,18 +118,36 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldOpenNextScreenAfterLoginWithFacebookSucceed() {
-        controller.onLoginWithFacebookSucceed()
+    fun shouldOpenNextScreenAfterLoginWithFacebookSucceedAndApiSucceed() {
+        stubFacebookApiToReturnOnCredentials(returnValue = Observable.just(createUser(id = 2)))
+        controller.onFacebookSuccess("token")
         verify(view).openNextScreen()
     }
 
     @Test
-    fun shouldShowErrorWhenLoginWithFacebookFails() {
-        controller.onLoginWithFacebookFails()
+    fun shouldShowErrorScreenAfterLoginWithFacebookSucceedButApiFails() {
+        stubFacebookApiToReturnOnCredentials(returnValue = Observable.error(RuntimeException()))
+        controller.onFacebookSuccess("token")
         verify(view).showLoginFailedError()
     }
 
+    @Test
+    fun shouldShowErrorWhenLoginWithFacebookFails() {
+        controller.onFacebookFail()
+        verify(view).showLoginFailedError()
+    }
+
+    @Test
+    fun shouldSetupFacebookButtonOnCreate() {
+        controller.onCreate()
+        verify(view).setupFacebookButton(facebook.createButton(controller, controller))
+    }
+
     private fun createUser(id: Int = 1) = User(id)
+
+    private fun stubFacebookApiToReturnOnCredentials(returnValue: Observable<User>?) {
+        whenever(api.loginWithFacebook(any())).thenReturn(returnValue)
+    }
 
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<User>) {
         whenever(api.login(login, password)).thenReturn(returnValue)

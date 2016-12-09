@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.rule.ActivityTestRule
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.elpassion.android.commons.espresso.*
@@ -20,7 +21,10 @@ import rx.Observable.*
 
 class LoginActivityTest() {
 
-    private val loginApi = mock<Login.Api> { on { login(any(), any()) } doReturn never() }
+    private val loginApi = mock<Login.Api> {
+        on { login(any(), any()) } doReturn never()
+        on { loginWithFacebook(any()) } doReturn never()
+    }
 
     @Rule
     @JvmField
@@ -98,7 +102,8 @@ class LoginActivityTest() {
     }
 
     @Test
-    fun shouldOpenNextScreenAfterLoginWithFacebookSucceed() {
+    fun shouldOpenNextScreenAfterLoginWithFacebookSucceedAndApiSucceed() {
+        whenever(loginApi.loginWithFacebook(any())) doReturn just(User(1))
         loginWithFacebook()
         checkIntent(NextScreenActivity::class.java)
     }
@@ -115,15 +120,16 @@ class LoginActivityTest() {
 
     private fun stubFacebookButton() {
         FacebookLoginButtonProvider.overided = object : FacebookLoginButtonProvider {
-            override fun addToContainer(viewGroup: ViewGroup, onSuccess: () -> Unit, onError: () -> Unit) {
-                val button = Button(viewGroup.context).apply {
-                    id = R.id.facebookButton
-                    text = "Login with facebook"
-                    setOnClickListener({
-                        onSuccess()
-                    })
+            override fun createButton(onSucces: FacebookLoginButtonProvider.FacebookCallbackSuccess, onError: FacebookLoginButtonProvider.FacebookCallbackError): (ViewGroup) -> View {
+                return {
+                    Button(it.context).apply {
+                        id = R.id.facebookButton
+                        text = "Login with facebook"
+                        setOnClickListener({
+                            onSucces.onFacebookSuccess("token")
+                        })
+                    }
                 }
-                viewGroup.addView(button)
             }
 
             override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {

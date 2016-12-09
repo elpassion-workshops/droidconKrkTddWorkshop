@@ -26,20 +26,21 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldPassFacebookButtonProviderCreatedByFacebookLoginCreator() {
+    fun shouldSetupFacebookButtonProviderWithCallbacks() {
         val facebookButtonProvider = mock<Login.FacebookButtonProvider>()
-        whenever(facebookLoginCreator.create()).thenReturn(facebookButtonProvider)
+        whenever(facebookLoginCreator.create(loginController)).thenReturn(facebookButtonProvider)
         loginController.onCreate()
         verify(view, times(1)).addFacebookButton(facebookButtonProvider)
     }
+
 }
 
 class LoginController(private val view: Login.View,
                       private val facebookLoginCreator: Login.FacebookLoginCreator,
-                      private val api: Login.Api) {
+                      private val api: Login.Api) :Login.FacebookLoginCallbacks {
 
     fun onCreate() {
-        view.addFacebookButton(facebookLoginCreator.create())
+        view.addFacebookButton(facebookLoginCreator.create(this))
     }
 
     fun onFacebookLoginSuccess(token: String) {
@@ -51,13 +52,16 @@ class LoginController(private val view: Login.View,
     }
 
 }
+
 interface Login {
 
     interface FacebookButtonProvider
 
     interface FacebookLoginCreator {
-        fun  create(): FacebookButtonProvider
+        fun create(loginController: LoginController): FacebookButtonProvider
     }
+
+    interface FacebookLoginCallbacks
 
     interface View {
         fun addFacebookButton(fbButtonProvider: FacebookButtonProvider)

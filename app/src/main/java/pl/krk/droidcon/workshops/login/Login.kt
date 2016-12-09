@@ -1,11 +1,11 @@
 package pl.krk.droidcon.workshops.login
 
-import android.content.Context
+import android.view.ViewGroup
 
 interface Login {
 
     interface FacebookButtonProvider {
-        fun getButton(context: Context): android.view.View
+        fun getButton(viewGroup: ViewGroup): android.view.View
     }
 
     interface FacebookLoginCreator {
@@ -28,10 +28,11 @@ interface Login {
     }
 
     object LoginApiProvider {
-        lateinit var override: Api
+        var override: Api = object : Api {
+            override fun loginWithFbToken(token: String) {
+
+            }
+        }
     }
 
-    object FacebookLoginCreatorProvider {
-        lateinit var override: FacebookLoginCreator
-    }
 }

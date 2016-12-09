@@ -9,7 +9,7 @@ import pl.krk.droidcon.workshops.R
 class LoginActivity : AppCompatActivity(), Login.View {
 
     private val controller: LoginController by lazy {
-        LoginController(this, Login.FacebookLoginCreatorProvider.override, Login.LoginApiProvider.override)
+        LoginController(this, FacebookLoginCreatorProvider.override, Login.LoginApiProvider.override)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +23,6 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun addFacebookButton(fbButtonProvider: Login.FacebookButtonProvider) {
-        loginActivity.addView(fbButtonProvider.getButton(this))
+        loginActivity.addView(fbButtonProvider.getButton(loginActivity))
     }
 }

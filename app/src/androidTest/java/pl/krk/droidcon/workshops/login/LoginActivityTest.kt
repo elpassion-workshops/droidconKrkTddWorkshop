@@ -22,7 +22,7 @@ class LoginActivityTest {
 
     @Before
     fun setUp() {
-        Login.FacebookLoginCreatorProvider.override = SuccessFacebookLoginCreator()
+        FacebookLoginCreatorProvider.override = SuccessFacebookLoginCreator()
         Login.LoginApiProvider.override = mock()
     }
 
@@ -44,7 +44,7 @@ class LoginActivityTest {
 
     @Test
     fun shouldShowErrorWhenFacebookLoginFails() {
-        Login.FacebookLoginCreatorProvider.override = ErrorFacebookLoginCreator()
+        FacebookLoginCreatorProvider.override = ErrorFacebookLoginCreator()
 
         rule.launchActivity(null)
         onId(R.id.facebookButton).click()
@@ -62,7 +62,7 @@ class LoginActivityTest {
 
     @Test
     fun shouldNotShowErrorWhenFacebookLoginSucceed() {
-        Login.FacebookLoginCreatorProvider.override = SuccessFacebookLoginCreator()
+        FacebookLoginCreatorProvider.override = SuccessFacebookLoginCreator()
 
         rule.launchActivity(null)
         onId(R.id.facebookButton).click()
@@ -74,8 +74,8 @@ class LoginActivityTest {
 class SuccessFacebookLoginCreator : Login.FacebookLoginCreator {
     override fun create(callbacks: Login.FacebookLoginCallbacks): Login.FacebookButtonProvider {
         return object : Login.FacebookButtonProvider {
-            override fun getButton(context: Context): View {
-                return View(context).apply {
+            override fun getButton(viewGroup: ViewGroup): View {
+                return View(viewGroup.context).apply {
                     id = R.id.facebookButton
                     setOnClickListener {
                         callbacks.onFacebookLoginSuccess("token")
@@ -88,8 +88,8 @@ class SuccessFacebookLoginCreator : Login.FacebookLoginCreator {
 class ErrorFacebookLoginCreator : Login.FacebookLoginCreator {
     override fun create(callbacks: Login.FacebookLoginCallbacks): Login.FacebookButtonProvider {
         return object : Login.FacebookButtonProvider {
-            override fun getButton(context: Context): View {
-                return View(context).apply {
+            override fun getButton(viewGroup: ViewGroup): View {
+                return View(viewGroup.context).apply {
                     id = R.id.facebookButton
                     setOnClickListener {
                         callbacks.onFacebookLoginError()

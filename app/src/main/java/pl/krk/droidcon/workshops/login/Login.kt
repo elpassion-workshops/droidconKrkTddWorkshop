@@ -18,4 +18,8 @@ interface Login {
     interface Api {
         fun loginWithFbToken(token: String)
     }
+
+    object LoginApiProvider {
+        lateinit var override: Api
+    }
 }

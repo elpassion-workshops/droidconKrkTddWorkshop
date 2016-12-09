@@ -9,10 +9,16 @@ import pl.krk.droidcon.workshops.next.NextScreenActivity
 
 class LoginActivity : AppCompatActivity(), Login.View {
     private val controller by lazy {
-        LoginController(Login.ApiProvider.get(), this, object : UserSharedPreferences {
-            override fun saveUser(user: User) {
-            }
-        })
+        LoginController(Login.ApiProvider.get(), this,
+                object : UserSharedPreferences {
+                    override fun saveUser(user: User) {
+                    }
+                },
+                object : Login.Facebook {
+                    override fun getFacebookButtonProvider(): Login.FacebookButtonProvider {
+                        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+                })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +51,6 @@ class LoginActivity : AppCompatActivity(), Login.View {
         loginErrorMessage.setText(R.string.invalidEmailError)
     }
 
-    override fun setupFacebookButton() {
-
+    override fun setupFacebookButton(provider: Login.FacebookButtonProvider) {
     }
 }

@@ -10,8 +10,9 @@ class LoginControllerTest {
 
     private val api = mock<Login.Api>()
     private val view = mock<Login.View>()
+    private val facebook = mock<Login.Facebook>()
     private val sharedPreferences: UserSharedPreferences = mock()
-    private val controller = LoginController(api, view, sharedPreferences)
+    private val controller = LoginController(api, view, sharedPreferences, facebook)
 
     @Before
     fun setUp() {
@@ -117,8 +118,10 @@ class LoginControllerTest {
 
     @Test
     fun shouldSetupViewWithFacebookButtonOnCreate() {
+        val facebookButtonProvider = mock<Login.FacebookButtonProvider>()
+        whenever(facebook.getFacebookButtonProvider()).thenReturn(facebookButtonProvider)
         controller.onCreate()
-        verify(view).setupFacebookButton()
+        verify(view).setupFacebookButton(facebookButtonProvider)
     }
 
     private fun createUser(id: Int = 1) = User(id)

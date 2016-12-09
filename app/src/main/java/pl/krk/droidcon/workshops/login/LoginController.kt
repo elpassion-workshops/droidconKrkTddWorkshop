@@ -3,12 +3,12 @@ package pl.krk.droidcon.workshops.login
 import rx.Subscription
 import java.util.regex.Pattern
 
-class LoginController(val api: Login.Api, val view: Login.View, val sharedPreferences: UserSharedPreferences) {
+class LoginController(val api: Login.Api, val view: Login.View, val sharedPreferences: UserSharedPreferences, val facebook: Login.Facebook) {
 
     private var subscription: Subscription? = null
 
     fun onCreate() {
-        view.setupFacebookButton()
+        view.setupFacebookButton(facebook.getFacebookButtonProvider())
     }
 
     fun onLogin(login: String, password: String) {

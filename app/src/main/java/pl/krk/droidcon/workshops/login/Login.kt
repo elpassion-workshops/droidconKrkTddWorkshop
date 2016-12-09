@@ -15,10 +15,16 @@ interface Login {
         fun showLoader()
         fun hideLoader()
         fun showInvalidEmailError()
-        fun setupFacebookButton()
+        fun setupFacebookButton(facebookButtonProvider: FacebookButtonProvider)
     }
 
     object ApiProvider : Provider<Api>({
         throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     })
+
+    interface Facebook {
+        fun getFacebookButtonProvider(): FacebookButtonProvider
+    }
+
+    interface FacebookButtonProvider
 }

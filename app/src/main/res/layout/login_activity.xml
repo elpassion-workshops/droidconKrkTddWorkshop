@@ -13,6 +13,7 @@
         android:id="@+id/loginErrorMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/facebook_login_error" />
+        android:text="@string/facebook_login_error"
+        android:visibility="gone" />
 
 </LinearLayout>

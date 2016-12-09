@@ -1,10 +1,7 @@
 package pl.krk.droidcon.workshops.login
 
 import android.support.test.rule.ActivityTestRule
-import com.elpassion.android.commons.espresso.click
-import com.elpassion.android.commons.espresso.hasText
-import com.elpassion.android.commons.espresso.isDisplayed
-import com.elpassion.android.commons.espresso.onId
+import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
@@ -49,5 +46,11 @@ class LoginActivityTest {
         onId(R.id.facebookButton).click()
 
         onId(R.id.loginErrorMessage).hasText(R.string.facebook_login_error)
+    }
+
+    @Test
+    fun shouldNotShowErrorOnStart() {
+        rule.launchActivity(null)
+        onId(R.id.loginErrorMessage).isNotDisplayed()
     }
 }

@@ -37,6 +37,10 @@ class LoginController(val api: Login.Api, val view: Login.View, val sharedPrefer
         view.openNextScreen()
     }
 
+    fun onLoginWithFacebookFails() {
+        view.showLoginFailedError()
+    }
+
     companion object {
         private val VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+").toRegex()
     }

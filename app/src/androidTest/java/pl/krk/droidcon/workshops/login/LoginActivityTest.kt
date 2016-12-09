@@ -2,6 +2,7 @@ package pl.krk.droidcon.workshops.login
 
 import android.support.test.rule.ActivityTestRule
 import com.elpassion.android.commons.espresso.click
+import com.elpassion.android.commons.espresso.hasText
 import com.elpassion.android.commons.espresso.isDisplayed
 import com.elpassion.android.commons.espresso.onId
 import com.nhaarman.mockito_kotlin.any
@@ -38,5 +39,15 @@ class LoginActivityTest {
         onId(R.id.facebookButton).click()
 
         verify(api, times(1)).loginWithFbToken(any())
+    }
+
+    @Test
+    fun shouldShowErrorWhenFacebookLoginFails() {
+        val api = mock<Login.Api>()
+        Login.LoginApiProvider.override = api
+        rule.launchActivity(null)
+        onId(R.id.facebookButton).click()
+
+        onId(R.id.loginErrorMessage).hasText(R.string.facebook_login_error)
     }
 }

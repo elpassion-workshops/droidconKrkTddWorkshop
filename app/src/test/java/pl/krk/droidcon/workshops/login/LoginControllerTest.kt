@@ -119,7 +119,7 @@ class LoginControllerTest {
     @Test
     fun shouldSetupViewWithFacebookButtonOnCreate() {
         val facebookButtonProvider = mock<Login.FacebookButtonProvider>()
-        whenever(facebook.getFacebookButtonProvider()).thenReturn(facebookButtonProvider)
+        whenever(facebook.getFacebookButtonProvider(controller)).thenReturn(facebookButtonProvider)
         controller.onCreate()
         verify(view).setupFacebookButton(facebookButtonProvider)
     }

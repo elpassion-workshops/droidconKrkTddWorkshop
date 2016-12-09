@@ -23,8 +23,10 @@ interface Login {
     })
 
     interface Facebook {
-        fun getFacebookButtonProvider(): FacebookButtonProvider
+        fun getFacebookButtonProvider(facebookCallback: FacebookCallback): FacebookButtonProvider
     }
 
     interface FacebookButtonProvider
+
+    interface FacebookCallback
 }

@@ -15,8 +15,10 @@ class LoginActivity : AppCompatActivity(), Login.View {
                     }
                 },
                 object : Login.Facebook {
-                    override fun getFacebookButtonProvider(): Login.FacebookButtonProvider {
-                        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    override fun getFacebookButtonProvider(facebookCallback: Login.FacebookCallback): Login.FacebookButtonProvider {
+                        return object : Login.FacebookButtonProvider {
+
+                        }
                     }
                 })
     }

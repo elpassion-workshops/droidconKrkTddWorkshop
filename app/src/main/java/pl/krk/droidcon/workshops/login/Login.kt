@@ -15,6 +15,7 @@ interface Login {
         fun showLoader()
         fun hideLoader()
         fun showInvalidEmailError()
+        fun setupFacebookButton()
     }
 
     object ApiProvider : Provider<Api>({

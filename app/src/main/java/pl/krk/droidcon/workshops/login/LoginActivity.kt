@@ -45,5 +45,7 @@ class LoginActivity : AppCompatActivity(), Login.View {
         loginErrorMessage.setText(R.string.invalidEmailError)
     }
 
+    override fun setupFacebookButton() {
 
+    }
 }

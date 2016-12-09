@@ -7,6 +7,10 @@ class LoginController(val api: Login.Api, val view: Login.View, val sharedPrefer
 
     private var subscription: Subscription? = null
 
+    fun onCreate() {
+        view.setupFacebookButton()
+    }
+
     fun onLogin(login: String, password: String) {
         if (login.isEmpty() || password.isEmpty()) {
             view.showEmptyCredentialError()

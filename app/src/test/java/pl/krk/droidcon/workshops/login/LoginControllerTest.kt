@@ -115,6 +115,12 @@ class LoginControllerTest {
         verify(sharedPreferences, times(1)).saveUser(createUser(id = 2))
     }
 
+    @Test
+    fun shouldSetupViewWithFacebookButtonOnCreate() {
+        controller.onCreate()
+        verify(view).setupFacebookButton()
+    }
+
     private fun createUser(id: Int = 1) = User(id)
 
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<User>) {

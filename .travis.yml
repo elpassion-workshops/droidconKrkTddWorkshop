@@ -1,0 +1,18 @@
+sudo: false
+language: android
+jdk: oraclejdk8
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-25.0.1
+    - android-25
+    - extra-android-m2repository
+
+before_install:
+  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - sleep 28
+  - adb shell input keyevent 82

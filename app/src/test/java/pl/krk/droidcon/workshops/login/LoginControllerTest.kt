@@ -121,6 +121,12 @@ class LoginControllerTest {
         verify(view).openNextScreen()
     }
 
+    @Test
+    fun shouldShowErrorWhenLoginWithFacebookFails() {
+        controller.onLoginWithFacebookFails()
+        verify(view).showLoginFailedError()
+    }
+
     private fun createUser(id: Int = 1) = User(id)
 
     private fun stubApiToReturnOnCredentials(login: String = any(), password: String = any(), returnValue: Observable<User>) {

@@ -6,4 +6,5 @@
     <string name="loginEmptyCredentialError">Login or password is empty!</string>
     <string name="invalidEmailError">Email is incorrect.</string>
     <string name="loginCallFailedError">Login call failed</string>
+    <string name="facebook_app_id">211857685933592</string>
 </resources>

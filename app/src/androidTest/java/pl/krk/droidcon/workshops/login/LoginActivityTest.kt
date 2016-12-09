@@ -1,12 +1,16 @@
 package pl.krk.droidcon.workshops.login
 
+import android.content.Intent
+import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.rule.ActivityTestRule
+import android.view.ViewGroup
+import android.widget.Button
 import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pl.krk.droidcon.workshops.InitIntentsRule
@@ -20,16 +24,17 @@ class LoginActivityTest() {
 
     @Rule
     @JvmField
-    val rule = ActivityTestRule(LoginActivity::class.java)
+    val rule = object : ActivityTestRule<LoginActivity>(LoginActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            stubFacebookButton()
+            Login.ApiProvider.override = { loginApi }
+        }
+    }
 
     @Rule
     @JvmField
     val intentsRule = InitIntentsRule()
-
-    @Before
-    fun setUp() {
-        Login.ApiProvider.override = { loginApi }
-    }
 
     @Test
     fun shouldHaveLoginHeader() {
@@ -92,10 +97,38 @@ class LoginActivityTest() {
         checkIntent(NextScreenActivity::class.java)
     }
 
+    @Test
+    fun shouldOpenNextScreenAfterLoginWithFacebookSucceed() {
+        Thread.sleep(1000)
+        loginWithFacebook()
+        checkIntent(NextScreenActivity::class.java)
+    }
+
+    private fun loginWithFacebook() {
+        onView(ViewMatchers.withId(R.id.facebookButton)).click()
+    }
+
     private fun login() {
         onId(R.id.loginLoginInput).typeText("email@test.pl")
         onId(R.id.loginPasswordInput).typeText("password")
         onId(R.id.loginLoginButton).click()
     }
-}
 
+    private fun stubFacebookButton() {
+        FacebookLoginButtonProvider.overided = object : FacebookLoginButtonProvider {
+            override fun addToContainer(viewGroup: ViewGroup, onSuccess: () -> Unit, onError: () -> Unit) {
+                val button = Button(viewGroup.context).apply {
+                    id = R.id.facebookButton
+                    text = "Login with facebook"
+                    setOnClickListener({
+                        onSuccess()
+                    })
+                }
+                viewGroup.addView(button)
+            }
+
+            override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+            }
+        }
+    }
+}

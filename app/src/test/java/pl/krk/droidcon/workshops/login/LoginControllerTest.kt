@@ -8,10 +8,10 @@ import org.junit.Test
 
 class LoginControllerTest {
 
-    val view = mock<Login.View>()
-    val api = mock<Login.Api>()
-    val facebookLoginCreator = mock<Login.FacebookLoginCreator>()
-    val loginController = LoginController(view, facebookLoginCreator, api)
+    private val view = mock<Login.View>()
+    private val api = mock<Login.Api>()
+    private val facebookLoginCreator = mock<Login.FacebookLoginCreator>()
+    private val loginController = LoginController(view, facebookLoginCreator, api)
 
     @Test
     fun shouldCallApiWithFbTokenAfterLoginSucceed() {

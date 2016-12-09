@@ -99,7 +99,6 @@ class LoginActivityTest() {
 
     @Test
     fun shouldOpenNextScreenAfterLoginWithFacebookSucceed() {
-        Thread.sleep(1000)
         loginWithFacebook()
         checkIntent(NextScreenActivity::class.java)
     }

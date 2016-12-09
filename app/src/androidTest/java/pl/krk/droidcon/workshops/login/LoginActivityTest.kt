@@ -1,6 +1,9 @@
 package pl.krk.droidcon.workshops.login
 
+import android.content.Context
 import android.support.test.rule.ActivityTestRule
+import android.view.View
+import android.view.ViewGroup
 import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
@@ -19,6 +22,7 @@ class LoginActivityTest {
 
     @Before
     fun setUp() {
+        Login.FacebookLoginCreatorProvider.override = SuccessFacebookLoginCreator()
         Login.LoginApiProvider.override = mock()
     }
 
@@ -40,8 +44,8 @@ class LoginActivityTest {
 
     @Test
     fun shouldShowErrorWhenFacebookLoginFails() {
-        val api = mock<Login.Api>()
-        Login.LoginApiProvider.override = api
+        Login.FacebookLoginCreatorProvider.override = ErrorFacebookLoginCreator()
+
         rule.launchActivity(null)
         onId(R.id.facebookButton).click()
 
@@ -54,5 +58,44 @@ class LoginActivityTest {
     fun shouldNotShowErrorOnStart() {
         rule.launchActivity(null)
         onId(R.id.loginErrorMessage).isNotDisplayed()
+    }
+
+    @Test
+    fun shouldNotShowErrorWhenFacebookLoginSucceed() {
+        Login.FacebookLoginCreatorProvider.override = SuccessFacebookLoginCreator()
+
+        rule.launchActivity(null)
+        onId(R.id.facebookButton).click()
+
+        onId(R.id.loginErrorMessage).isNotDisplayed()
+    }
+}
+
+class SuccessFacebookLoginCreator : Login.FacebookLoginCreator {
+    override fun create(callbacks: Login.FacebookLoginCallbacks): Login.FacebookButtonProvider {
+        return object : Login.FacebookButtonProvider {
+            override fun getButton(context: Context): View {
+                return View(context).apply {
+                    id = R.id.facebookButton
+                    setOnClickListener {
+                        callbacks.onFacebookLoginSuccess("token")
+                    }
+                }
+            }
+        }
+    }
+}
+class ErrorFacebookLoginCreator : Login.FacebookLoginCreator {
+    override fun create(callbacks: Login.FacebookLoginCallbacks): Login.FacebookButtonProvider {
+        return object : Login.FacebookButtonProvider {
+            override fun getButton(context: Context): View {
+                return View(context).apply {
+                    id = R.id.facebookButton
+                    setOnClickListener {
+                        callbacks.onFacebookLoginError()
+                    }
+                }
+            }
+        }
     }
 }

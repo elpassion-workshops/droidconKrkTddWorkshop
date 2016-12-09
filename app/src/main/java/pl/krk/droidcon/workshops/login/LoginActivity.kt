@@ -6,12 +6,23 @@ import android.view.View.VISIBLE
 import kotlinx.android.synthetic.main.login_activity.*
 import pl.krk.droidcon.workshops.R
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), Login.View {
+
+    private val controller: LoginController by lazy {
+        LoginController(this, Login.FacebookLoginCreatorProvider.override, Login.LoginApiProvider.override)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
-        facebookButton.setOnClickListener { loginErrorMessage.visibility = VISIBLE }
-        Login.LoginApiProvider.override.loginWithFbToken("")
+        controller.onCreate()
+    }
+
+    override fun showLoginFailsError() {
+        loginErrorMessage.visibility = VISIBLE
+    }
+
+    override fun addFacebookButton(fbButtonProvider: Login.FacebookButtonProvider) {
+        loginActivity.addView(fbButtonProvider.getButton(this))
     }
 }

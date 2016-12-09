@@ -8,11 +8,11 @@ class LoginController(private val view: Login.View,
         view.addFacebookButton(facebookLoginCreator.create(this))
     }
 
-    fun onFacebookLoginSuccess(token: String) {
+    override fun onFacebookLoginSuccess(token: String) {
         api.loginWithFbToken(token)
     }
 
-    fun onFacebookLoginError() {
+    override fun onFacebookLoginError() {
         view.showLoginFailsError()
     }
 

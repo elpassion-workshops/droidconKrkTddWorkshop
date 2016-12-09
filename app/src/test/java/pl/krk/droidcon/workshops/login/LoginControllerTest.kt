@@ -136,5 +136,4 @@ class LoginControllerTest {
     private fun loginWithCredentials(login: String = "login@test.pl", password: String = "password") {
         controller.onLogin(login, password)
     }
-
 }

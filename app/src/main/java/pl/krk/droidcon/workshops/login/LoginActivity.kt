@@ -21,6 +21,12 @@ class LoginActivity : AppCompatActivity(), Login.View {
         loginLoginButton.setOnClickListener {
             controller.onLogin(loginLoginInput.text.toString(), loginPasswordInput.text.toString())
         }
+        FacebookLoginButtonProvider.get().addToContainer(loginLayout,
+                onSuccess = {
+                    controller.onLoginWithFacebookSucceed()
+                }, onError = {
+
+        })
     }
 
     override fun hideLoader() {
@@ -45,5 +51,8 @@ class LoginActivity : AppCompatActivity(), Login.View {
         loginErrorMessage.setText(R.string.invalidEmailError)
     }
 
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        super.onActivityResult(requestCode, resultCode, data)
+        FacebookLoginButtonProvider.get().onActivityResult(requestCode, resultCode, data)
+    }
 }

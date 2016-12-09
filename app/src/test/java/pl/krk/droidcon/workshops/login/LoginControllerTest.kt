@@ -23,6 +23,12 @@ class LoginControllerTest {
         loginController.onFacebookLoginSuccess("token")
         verify(api).loginWithFbToken("token")
     }
+
+    @Test
+    fun shouldShowLoginFailsErrorWhenLoginWithFacebookFails() {
+        loginController.onFacebookLoginError()
+        verify(view).showLoginFailsError()
+    }
 }
 
 class LoginController(private val view: Login.View,
@@ -37,6 +43,10 @@ class LoginController(private val view: Login.View,
         api.loginWithFbToken(token)
     }
 
+    fun onFacebookLoginError() {
+        view.showLoginFailsError()
+    }
+
 }
 interface Login {
 
@@ -44,6 +54,7 @@ interface Login {
 
     interface View {
         fun addFacebookButton(fbButtonProvider: FacebookButtonProvider)
+        fun showLoginFailsError()
     }
 
     interface Api {

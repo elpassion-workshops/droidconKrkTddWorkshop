@@ -1,3 +1,18 @@
+buildscript {
+    ext.kotlin_version = '1.0.5-2'
+    ext.dexMakerVersion = '1.4'
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -19,12 +34,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
 }
 
 dependencies {
+    compile "io.reactivex:rxjava:1.1.9"
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.facebook.android:facebook-android-sdk:4.18.0'
+
+    testCompile 'junit:junit:4.12'
+    testCompile "com.nhaarman:mockito-kotlin:0.12.2"
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -42,16 +62,4 @@ dependencies {
     androidTestCompile "com.crittercism.dexmaker:dexmaker:$dexMakerVersion"
     androidTestCompile "com.crittercism.dexmaker:dexmaker-dx:$dexMakerVersion"
     androidTestCompile "com.crittercism.dexmaker:dexmaker-mockito:$dexMakerVersion"
-
-    compile "io.reactivex:rxjava:1.1.9"
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.facebook.android:facebook-android-sdk:4.18.0'
-
-    testCompile 'junit:junit:4.12'
-    testCompile "com.nhaarman:mockito-kotlin:0.12.2"
-}
-
-repositories {
-    mavenCentral()
 }

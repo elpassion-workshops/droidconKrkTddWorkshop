@@ -4,10 +4,10 @@ jdk: oraclejdk8
 
 android:
   components:
-    - tools
-    - platform-tools
     - build-tools-23.0.3
     - android-23
+    - tools
+    - platform-tools
     - extra-android-m2repository
 
 before_install:

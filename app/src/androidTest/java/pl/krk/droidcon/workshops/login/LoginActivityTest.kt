@@ -45,7 +45,9 @@ class LoginActivityTest {
         rule.launchActivity(null)
         onId(R.id.facebookButton).click()
 
-        onId(R.id.loginErrorMessage).hasText(R.string.facebook_login_error)
+        onId(R.id.loginErrorMessage)
+                .isDisplayed()
+                .hasText(R.string.facebook_login_error)
     }
 
     @Test

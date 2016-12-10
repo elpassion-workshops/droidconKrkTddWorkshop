@@ -77,7 +77,7 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldHideLoaderWhenLoginCompleted() {
+    fun shouldHideLoaderWhenLoginSucceeds() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         doLogin()
         verify(view).hideLoader()

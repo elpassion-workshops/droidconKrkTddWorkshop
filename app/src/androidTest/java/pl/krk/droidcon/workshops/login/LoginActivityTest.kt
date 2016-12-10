@@ -72,7 +72,7 @@ class LoginActivityTest {
                 .click()
         onId(R.id.errorText)
                 .isDisplayed()
-                .hasText(R.string.loginErrorText)
+                .hasText(R.string.emailErrorText)
     }
 
     @Test
@@ -81,13 +81,21 @@ class LoginActivityTest {
     }
 
     @Test
-    fun shouldShowLoginErrorWhenInvalidEmailAndLoginButtonClicked() {
+    fun shouldShowEmailErrorWhenInvalidEmailAndLoginButtonClicked() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        onId(R.id.loginButton)
+                .click()
         onId(R.id.errorText)
                 .hasText(R.string.emailErrorText)
     }
 
     @Test
     fun shouldShowPasswordErrorWhenInvalidPasswordAndLoginButtonClicked() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        onId(R.id.loginEmailInput)
+                .typeText("somepass")
+        onId(R.id.loginButton)
+                .click()
         onId(R.id.errorText)
                 .hasText(R.string.passwordErrorText)
     }

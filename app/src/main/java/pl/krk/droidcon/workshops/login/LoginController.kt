@@ -30,7 +30,7 @@ class LoginController(private val api: Login.Api,
                 .subscribe({
                     view.gotoHomeScreen()
                 }, {
-                    view.showError()
+                    view.showError(R.string.loginErrorText)
                 })
     }
 

@@ -21,13 +21,10 @@ class LoginActivity : AppCompatActivity(), Login.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
         loginButton.setOnClickListener {
-            controller.onLogin("email@test.pl", "password")
+            controller.onLogin(
+                    loginEmailInput.text.toString(),
+                    loginPasswordInput.text.toString())
         }
-    }
-
-    override fun showError() {
-        errorText.text = resources.getString(R.string.loginErrorText)
-        errorText.visibility = View.VISIBLE
     }
 
     override fun showError(errorMessageResId: Int) {

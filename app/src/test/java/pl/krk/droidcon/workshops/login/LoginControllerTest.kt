@@ -2,6 +2,7 @@ package pl.krk.droidcon.workshops.login
 
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
+import pl.krk.droidcon.workshops.R
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.schedulers.TestScheduler
@@ -50,14 +51,14 @@ class LoginControllerTest {
     fun shouldShowErrorWhenApiCallFails() {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException("login failed")))
         login()
-        verify(view).showError()
+        verify(view).showError(R.string.loginErrorText)
     }
 
     @Test
     fun shouldNotShowErrorWhenApiCallSuccess() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("")))
         login()
-        verify(view, never()).showError()
+        verify(view, never()).showError(R.string.loginErrorText)
     }
 
     @Test

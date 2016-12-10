@@ -9,13 +9,16 @@ import rx.schedulers.Schedulers
 
 class LoginActivity : AppCompatActivity(), Login.View {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.login_activity)
-        val loginController = LoginController(LoginApiProvider.get(), this, object : Login.UserStorage {
+    private val loginController by lazy {
+        LoginController(LoginApiProvider.get(), this, object : Login.UserStorage {
             override fun saveUserData(user: User) {
             }
         }, Schedulers.immediate(), Schedulers.immediate())
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.login_activity)
         loginButton.setOnClickListener {
             loginController.onLogin("email@test.pl", "password")
         }

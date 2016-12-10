@@ -20,12 +20,11 @@ class LoginActivityTest {
 
     @Rule
     @JvmField
-    val rule = ActivityTestRule(LoginActivity::class.java, false, false)
+    val rule = ActivityTestRule(LoginActivity::class.java)
 
     @Before
     fun setUp() {
         LoginApiProvider.override = api
-        rule.launchActivity(null)
     }
 
     @Test

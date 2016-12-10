@@ -48,15 +48,19 @@ class LoginControllerTest {
     @Test
     fun shouldShowErrorMessageWhenEmailEmpty() {
         login(email = "")
-
         verify(view).showEmptyCredentialsError()
     }
 
     @Test
     fun shouldShowErrorMessageWhenPasswordIsEmpty() {
         login( password = "")
-
         verify(view).showEmptyCredentialsError()
+    }
+
+    @Test
+    fun shouldNotCallApiWhenEmailIsIncorrect() {
+        login(email = "wrong-email.test.pl")
+        verify(api, never()).login(any(), any())
     }
 
     private fun login(email: String = "asd@test.pl", password: String = "password") {
@@ -68,11 +72,16 @@ class LoginControllerTest {
 class LoginController(private val api: Login.Api, private val view: Login.View) {
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
+            if (email.matches(EMAIL_REGEX))
             api.login(email, password)
         }
         else {
             view.showEmptyCredentialsError()
         }
+    }
+
+    companion object {
+        private  val EMAIL_REGEX = ".*@.*".toRegex()
     }
 }
 

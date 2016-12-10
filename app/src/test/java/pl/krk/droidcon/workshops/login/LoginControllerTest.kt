@@ -88,9 +88,24 @@ class LoginControllerTest {
     }
 
     @Test
+    fun shouldNotOpenNextScreenWhenApiCallError() {
+        val wrongEmail = "wrong.email@test.pl"
+        val wrongPass = "wrongPass"
+        whenever(api.login(wrongEmail, wrongPass)).thenReturn(Observable.error(RuntimeException()))
+        login(wrongEmail, wrongPass)
+        verify(view, never()).openNextScreen()
+    }
+
+    @Test
     fun shouldShowProgressWhenLoggingIn() {
         login()
         verify(view).showProgressLoader()
+    }
+
+    @Test
+    fun shouldHideProgressWhenLoggedIn() {
+        login()
+        verify(view).hideProgressLoader()
     }
 
     private fun login(email: String = "email@test.pl", password: String = "password") {
@@ -107,6 +122,7 @@ class LoginController(private val api: Login.Api, private val view: View) {
             }, {
                 view.showErrorMessage()
             })
+            view.hideProgressLoader()
         }
     }
 
@@ -125,4 +141,5 @@ interface View {
     fun openNextScreen()
     fun showErrorMessage()
     fun showProgressLoader()
+    fun hideProgressLoader()
 }

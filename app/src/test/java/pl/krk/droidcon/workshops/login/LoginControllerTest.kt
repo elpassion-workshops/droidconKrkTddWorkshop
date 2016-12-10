@@ -9,7 +9,8 @@ import org.junit.Test
 class LoginControllerTest {
 
     private val api = mock<Login.Api>()
-    private val controller = LoginController(api)
+    private val view = mock<Login.View>()
+    private val controller = LoginController(api, view)
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -49,11 +50,31 @@ class LoginControllerTest {
     fun shouldNotCallLoginIfLoginIsCorrectAndPasswordIsEmpty() {
         login(login = "123", password = "")
         verify(api, never()).login(any(), any())
+
     }
 
     @Test
     fun shouldNotCallLoginIfPasswordIsNotHaveValidFormat() {
         login("name@test.pl", password = "12")
         verify(api, never()).login(any(), any())
+    }
+
+    @Test
+    fun shouldShowErrorWhenLoginFails() {
+        login(login = "")
+        verify(view).showError(any())
+    }
+
+    @Test
+    fun shouldNotShowErrorOnSuccessfulLogin() {
+        login()
+        verify(view, never()).showError(any())
+    }
+
+    @Test
+    fun shouldHideErrorMessageOnLogin() {
+        view.showError("error message")
+        login()
+        verify(view).hideError()
     }
 }

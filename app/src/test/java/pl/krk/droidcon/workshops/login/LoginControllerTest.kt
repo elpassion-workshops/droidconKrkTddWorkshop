@@ -167,11 +167,15 @@ class LoginController(private val api: Login.Api, private val view: View, privat
         }.doOnUnsubscribe {
             view.hideProgressLoader()
         }.subscribe({
-            userRepository.saveUser()
-            view.openNextScreen()
+            loginSuccess()
         }, {
             view.showErrorMessage()
         })
+    }
+
+    private fun loginSuccess() {
+        userRepository.saveUser()
+        view.openNextScreen()
     }
 
     private fun updateUiOnLoginClicked() {

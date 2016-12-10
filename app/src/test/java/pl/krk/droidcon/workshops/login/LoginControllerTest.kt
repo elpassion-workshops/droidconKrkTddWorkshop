@@ -76,6 +76,13 @@ class LoginControllerTest {
         verify(view).showLoader()
     }
 
+    @Test
+    fun shouldHideLoaderWhenLoginCompleted() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        doLogin()
+        verify(view).hideLoader()
+    }
+
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {
         controller.onLogin(email, password)
     }

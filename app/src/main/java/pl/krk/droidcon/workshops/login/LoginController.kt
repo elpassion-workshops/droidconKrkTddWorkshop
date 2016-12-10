@@ -12,6 +12,7 @@ class LoginController(private val api: Login.Api, private val view : Login.View)
         api.login(email, password).subscribe(
                 {view.openNextScreen()},
                 {view.showError()})
+        view.hideLoader()
     }
 
     private fun String.isEmailValid(): Boolean {

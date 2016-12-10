@@ -115,6 +115,12 @@ class LoginControllerTest {
         verify(view, never()).hideProgressLoader()
     }
 
+    @Test
+    fun shouldHideErrorMessageBeforeLogin() {
+        login()
+        verify(view).hideErrorMessage()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
@@ -124,6 +130,7 @@ class LoginController(private val api: Login.Api, private val view: View) {
     fun onLogin(email: String, password: String) {
         if (isEmailValid(email) && password.isNotEmpty()) {
             view.showProgressLoader()
+            view.hideErrorMessage()
             api.login(email, password).subscribe({
                 view.openNextScreen()
             }, {
@@ -150,4 +157,5 @@ interface View {
     fun showErrorMessage()
     fun showProgressLoader()
     fun hideProgressLoader()
+    fun hideErrorMessage()
 }

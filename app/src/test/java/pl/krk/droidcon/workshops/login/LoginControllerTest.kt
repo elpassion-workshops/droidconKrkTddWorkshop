@@ -29,10 +29,15 @@ class LoginControllerTest {
         verify(api, never()).login(any())
     }
 
-
     @Test
     fun shouldNotCallApiWhenEmailDoesntHaveAtChar() {
         controller.onLogin("emailtest.pl")
+        verify(api, never()).login(any())
+    }
+
+    @Test
+    fun shouldNotCallApiWhenEmailDoesntHaveDot() {
+        controller.onLogin("email@testpl")
         verify(api, never()).login(any())
     }
 }
@@ -44,7 +49,7 @@ class LoginController(private val api: Login.Api) {
         }
     }
 
-    private fun isEmailValid(email: String) = email.isNotEmpty() && email.contains("@")
+    private fun isEmailValid(email: String) = email.isNotEmpty() && email.contains("@") && email.contains(".")
 }
 
 interface Login {

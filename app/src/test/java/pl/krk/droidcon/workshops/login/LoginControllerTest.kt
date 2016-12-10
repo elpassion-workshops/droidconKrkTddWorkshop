@@ -87,6 +87,12 @@ class LoginControllerTest {
         verify(view).showErrorMessage()
     }
 
+    @Test
+    fun shouldShowProgressWhenLoggingIn() {
+        login()
+        verify(view).showProgressLoader()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
@@ -95,6 +101,7 @@ class LoginControllerTest {
 class LoginController(private val api: Login.Api, private val view: View) {
     fun onLogin(email: String, password: String) {
         if (isEmailValid(email) && password.isNotEmpty()) {
+            view.showProgressLoader()
             api.login(email, password).subscribe({
                 view.openNextScreen()
             }, {
@@ -117,4 +124,5 @@ interface Login {
 interface View {
     fun openNextScreen()
     fun showErrorMessage()
+    fun showProgressLoader()
 }

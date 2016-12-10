@@ -39,4 +39,10 @@ class LoginActivityTest {
             .typeText("password")
             .hasText("password")
     }
+
+    @Test
+    fun shouldHaveSubmitButton() {
+        onId(R.id.loginButton)
+                .isDisplayed()
+    }
 }

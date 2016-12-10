@@ -12,7 +12,7 @@ class LoginControllerTest {
         on { login(any(), any()) } doReturn Observable.never()
     }
     val view = mock<Login.View>()
-    private val userStorage = mock<UserStorage>()
+    private val userStorage = mock<Login.UserStorage>()
 
     private val controller = LoginController(api, view, userStorage, Schedulers.immediate(), Schedulers.immediate())
 

@@ -19,18 +19,22 @@ class LoginControllerTest {
 
     @Test
     fun shouldNotCallApiWhenEmailIsEmpty() {
-        doLogin(email = "", password = "password")
-        verify(api, never()).login(any(), any())
+        doLogin(email = "")
+        verifyLoginNotCalled()
     }
 
     @Test
     fun shouldNotCallApiWhenPasswordEmpty() {
         doLogin(password = "")
-        verify(api, never()).login(any(), any())
+        verifyLoginNotCalled()
     }
 
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {
         controller.onLogin(email, password)
+    }
+
+    private fun verifyLoginNotCalled() {
+        verify(api, never()).login(any(), any())
     }
 }
 

@@ -1,9 +1,6 @@
 package pl.krk.droidcon.workshops.login
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 
 class LoginControllerTest {
@@ -53,6 +50,12 @@ class LoginControllerTest {
         verify(api).login("email@test.pl", "password")
     }
 
+    @Test
+    fun shouldReallyCallApiWithPassword() {
+        login(password = "pass")
+        verify(api).login(any(), eq("pass"))
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
@@ -61,7 +64,7 @@ class LoginControllerTest {
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String, password: String) {
         if (isEmailValid(email)) {
-            api.login(email, "password")
+            api.login(email, password)
         }
     }
 

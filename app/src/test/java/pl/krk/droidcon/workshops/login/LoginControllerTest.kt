@@ -3,19 +3,25 @@ package pl.krk.droidcon.workshops.login
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import rx.Observable
+import rx.schedulers.TestScheduler
 
 class LoginControllerTest {
 
+    private val observeOnScheduler = TestScheduler()
+    private val subscribeOnScheduler = TestScheduler()
     private val api = mock<Login.Api>()
     private val storage = mock<Login.Storage>()
     private val view = mock<Login.View>()
-    private val controller = LoginController(api, storage, view)
+    private val controller = LoginController(api, storage, view, observeOnScheduler,
+            subscribeOnScheduler)
     private val user = User(token = "droicon krakow rulez!")
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
+        subscribeOnScheduler.triggerActions()
+        observeOnScheduler.triggerActions()
         verify(api).login("email@test.pl", "mypass")
         verify(view).showLoadProgress()
         verify(view).hideLoadProgress()
@@ -25,6 +31,8 @@ class LoginControllerTest {
     fun shouldReallyCallApiWithProvidedEmail() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
+        subscribeOnScheduler.triggerActions()
+        observeOnScheduler.triggerActions()
         verify(api).login("email@test.pl", "mypass")
         verify(view).showLoadProgress()
         verify(view).hideLoadProgress()
@@ -57,7 +65,6 @@ class LoginControllerTest {
     fun shouldNotCallLoginIfLoginIsCorrectAndPasswordIsEmpty() {
         login(login = "123", password = "")
         verify(api, never()).login(any(), any())
-
     }
 
     @Test
@@ -76,6 +83,8 @@ class LoginControllerTest {
     fun shouldNotShowErrorMessageOnSuccessfulLogin() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
+        subscribeOnScheduler.triggerActions()
+        observeOnScheduler.triggerActions()
         verify(view, never()).showError(any())
         verify(view).showLoadProgress()
         verify(view).hideLoadProgress()
@@ -85,6 +94,8 @@ class LoginControllerTest {
     fun shouldShowErrorMessageOnFailedLogin() {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
         login()
+        subscribeOnScheduler.triggerActions()
+        observeOnScheduler.triggerActions()
         verify(view).showLoadProgress()
         verify(view).showError(any())
         verify(view).hideLoadProgress()
@@ -102,6 +113,8 @@ class LoginControllerTest {
     fun shouldOpenMainScreenAfterSuccessfulLogin() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
+        subscribeOnScheduler.triggerActions()
+        observeOnScheduler.triggerActions()
         verify(view).showMainScreen()
     }
 
@@ -109,6 +122,8 @@ class LoginControllerTest {
     fun shouldStoreUserInPersistentStoreAfterSuccessfulLogin() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
+        subscribeOnScheduler.triggerActions()
+        observeOnScheduler.triggerActions()
         verify(storage).setUser(user)
     }
 
@@ -117,5 +132,21 @@ class LoginControllerTest {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
         login()
         verify(storage, never()).setUser(user)
+    }
+
+    @Test
+    fun shouldObserveOnProvidedScheduler() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
+        LoginController(api, storage, view, observeOnScheduler, subscribeOnScheduler).onLogin("email@test.pl","password")
+        verify(view, never()).showMainScreen()
+    }
+
+    @Test
+    fun shouldSubscribeOnProvidedScheduler() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
+        LoginController(api, storage, view, observeOnScheduler, subscribeOnScheduler).onLogin("email@test.pl", "password")
+        subscribeOnScheduler.triggerActions()
+        observeOnScheduler.triggerActions()
+        verify(view).showMainScreen()
     }
 }

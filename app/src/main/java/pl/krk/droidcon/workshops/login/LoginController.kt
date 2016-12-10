@@ -1,10 +1,13 @@
 package pl.krk.droidcon.workshops.login
 
+import rx.Scheduler
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
-class LoginController(private val api: Login.Api, private val storage : Login.Storage,
-                      private val view: Login.View) {
+class LoginController(private val api: Login.Api, private val storage: Login.Storage,
+                      private val view: Login.View,
+                      private val observeOnScheduler : Scheduler,
+                      private val subscribeOnScheduler: Scheduler) {
 
     private fun credentialsAreValid(email: String, password: String): Boolean =
             (password.length >= 3) and email.isNotEmpty() and password.isNotEmpty()
@@ -15,6 +18,8 @@ class LoginController(private val api: Login.Api, private val storage : Login.St
         if (credentialsAreValid(email, password)) {
             api
                     .login(email, password)
+                    .observeOn(observeOnScheduler)
+                    .subscribeOn(subscribeOnScheduler)
                     .doOnSubscribe {
                         view.hideError()
                         view.showLoadProgress()

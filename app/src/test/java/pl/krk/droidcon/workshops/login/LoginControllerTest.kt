@@ -1,6 +1,7 @@
 package pl.krk.droidcon.workshops.login
 
 import com.nhaarman.mockito_kotlin.*
+import org.junit.Before
 import org.junit.Test
 
 class LoginControllerTest {
@@ -12,6 +13,11 @@ class LoginControllerTest {
     private val view = mock<Login.View>()
     private val emailChecker = mock<Login.EmailChecker>()
     private val controller = LoginController(api, view, emailChecker)
+
+    @Before
+    fun setUp() {
+        whenever(emailChecker.verifyEmail(any())).thenReturn(true)
+    }
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -106,6 +112,27 @@ class LoginControllerTest {
         verify(view).displayErrorMessage(ERR_WRONG_EMAIL)
     }
 
+    @Test
+    fun shouldNotTouchViewWhenEmailIsNotValid() {
+        // given
+        whenever(emailChecker.verifyEmail("email@com")).thenReturn(false)
+
+        // when
+        controller.onLogin("email@com", "password")
+        verify(view).displayErrorMessage(any())
+
+        // then
+        verifyNoMoreInteractions(view)
+    }
+
+    @Test
+    fun shouldNotTouchApiWhenEmailIsNotValid() {
+        whenever(emailChecker.verifyEmail("email@com")).thenReturn(false)
+
+        controller.onLogin("email@com", "password")
+
+        verifyNoMoreInteractions(api)
+    }
 }
 
 class LoginController(private val api: Login.Api,
@@ -122,6 +149,7 @@ class LoginController(private val api: Login.Api,
 
         if (!emailChecker.verifyEmail(email)) {
             view.displayErrorMessage(ERR_WRONG_EMAIL)
+            return
         }
 
         view.displayProgressBar()

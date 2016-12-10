@@ -38,14 +38,21 @@ class LoginControllerTest {
         verify(api).login(any(), eq("password2"))
     }
 
+    @Test
+    fun shouldNotCallApiWhenPasswordIsEmpty() {
+        controller.onLogin(email = "any login", password = "")
+        verify(api, never()).login(any(), any())
+    }
+
 }
 
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String, password: String) {
-
-        if (email.isNotEmpty()) {
-            api.login(email, password)
+        if (password.isEmpty() || email.isEmpty()) {
+            return
         }
+
+        api.login(email, password)
     }
 
 

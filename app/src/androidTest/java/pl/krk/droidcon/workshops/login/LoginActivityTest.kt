@@ -2,6 +2,8 @@ package pl.krk.droidcon.workshops.login
 
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.intent.Intents
+import android.support.test.espresso.intent.matcher.IntentMatchers
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.withInputType
 import android.support.test.rule.ActivityTestRule
@@ -11,6 +13,7 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,6 +31,7 @@ class LoginActivityTest {
     @Before
     fun setUp() {
         LoginApiProvider.override = api
+        Intents.init()
     }
 
     @Test
@@ -112,5 +116,21 @@ class LoginActivityTest {
 
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isNotDisplayed()
+    }
+
+    @Test
+    fun shouldOpenNewScreen() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+
+        onId(R.id.loginEmailInput).typeText("any login")
+        onId(R.id.loginPasswordInput).typeText("any password")
+        onId(R.id.loginButton).click()
+
+        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
     }
 }

@@ -10,7 +10,8 @@ class LoginControllerTest {
 
     private val api = mock<Login.Api>()
     private val view = mock<View>()
-    private val controller = LoginController(api, view)
+    private val userRepository = mock<UserRepository>()
+    private val controller = LoginController(api, view, userRepository)
 
     @Before
     fun setup() {
@@ -137,12 +138,18 @@ class LoginControllerTest {
         verify(view, times(1)).hideProgressLoader()
     }
 
+    @Test
+    fun shouldStoreUserData() {
+        login()
+        verify(userRepository).saveUser()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
 }
 
-class LoginController(private val api: Login.Api, private val view: View) {
+class LoginController(private val api: Login.Api, private val view: View, private val userRepository: UserRepository) {
 
     var loginSubscripiton: Subscription? = null
 
@@ -160,6 +167,7 @@ class LoginController(private val api: Login.Api, private val view: View) {
         }.doOnUnsubscribe {
             view.hideProgressLoader()
         }.subscribe({
+            userRepository.saveUser()
             view.openNextScreen()
         }, {
             view.showErrorMessage()
@@ -179,17 +187,20 @@ class LoginController(private val api: Login.Api, private val view: View) {
         loginSubscripiton?.unsubscribe()
     }
 }
-
 interface Login {
+
     interface Api {
         fun login(s: String, password: String): Observable<Unit>
     }
 }
-
 interface View {
+
     fun openNextScreen()
     fun showErrorMessage()
     fun showProgressLoader()
     fun hideProgressLoader()
     fun hideErrorMessage()
+}
+interface UserRepository {
+    fun saveUser()
 }

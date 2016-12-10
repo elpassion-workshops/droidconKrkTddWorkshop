@@ -45,4 +45,10 @@ class LoginActivityTest {
         onId(R.id.loginButton)
                 .isDisplayed()
     }
+
+    @Test
+    fun shouldNotDisplayErrorMessageOnInit() {
+        onId(R.id.loginErrorMessage)
+        .isNotDisplayed()
+    }
 }

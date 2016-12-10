@@ -10,6 +10,12 @@
         android:layout_height="wrap_content"
         android:text="@string/loginEmailHeader"/>
 
+    <TextView
+        android:id="@+id/loginErrorMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
+
     <EditText
         android:id="@+id/loginEmailInput"
         android:layout_width="match_parent"

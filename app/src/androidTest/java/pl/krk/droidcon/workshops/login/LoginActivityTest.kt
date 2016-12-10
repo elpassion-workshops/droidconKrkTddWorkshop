@@ -63,4 +63,10 @@ class LoginActivityTest {
         onId(R.id.loginLoginButton)
                 .hasText(R.string.loginLoginText)
     }
+
+    @Test
+    fun shouldLoginButtonBeEnabled() {
+        onId(R.id.loginLoginButton)
+                .isEnabled()
+    }
 }

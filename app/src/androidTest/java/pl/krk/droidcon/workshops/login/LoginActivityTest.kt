@@ -91,4 +91,13 @@ class LoginActivityTest {
         onId(R.id.loginButton).click()
         checkIntent(HomeActivity::class.java)
     }
+
+    @Test
+    fun shouldShowLoaderWhenLoginClicked() {
+        whenever(api.login(any(), any())) doReturn Observable.never()
+        onId(R.id.loginButton).click()
+        onId(R.id.loginProgress).isDisplayed()
+    }
+
+
 }

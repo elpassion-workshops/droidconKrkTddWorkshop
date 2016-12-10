@@ -1,10 +1,8 @@
 package pl.krk.droidcon.workshops.login
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
+import rx.Observable
 
 class LoginControllerTest {
 
@@ -14,12 +12,14 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         login()
         verify(api).login("email@test.pl", "mypass")
     }
 
     @Test
     fun shouldReallyCallApiWithProvidedEmail() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         login()
         verify(api).login("email@test.pl", "mypass")
     }
@@ -36,6 +36,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedPassword() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         login()
         verify(api).login("email@test.pl", "mypass")
     }
@@ -66,15 +67,16 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldNotShowErrorOnSuccessfulLogin() {
+    fun shouldNotShowErrorMessageOnSuccessfulLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         login()
         verify(view, never()).showError(any())
     }
 
     @Test
-    fun shouldHideErrorMessageOnLogin() {
-        view.showError("error message")
+    fun shouldShowErrorMessageOnFailedLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
         login()
-        verify(view).hideError()
+        verify(view).showError(any())
     }
 }

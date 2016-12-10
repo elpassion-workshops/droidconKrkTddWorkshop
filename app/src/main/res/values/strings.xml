@@ -3,5 +3,5 @@
     <string name="facebook_app_id">211857685933592</string>
     <string name="loginEmailHeader">Email</string>
     <string name="loginPasswordHeader">Password</string>
-    <string name="loginLoginButtonLabel">Login</string>
+    <string name="loginCredentialEmptyError">Please fill credentials</string>
 </resources>

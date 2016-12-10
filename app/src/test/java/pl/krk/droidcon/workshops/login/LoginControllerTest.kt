@@ -1,6 +1,7 @@
 package pl.krk.droidcon.workshops.login
 
 import com.nhaarman.mockito_kotlin.*
+import org.junit.Before
 import org.junit.Test
 import rx.Observable
 
@@ -60,6 +61,13 @@ class LoginControllerTest {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
         doLogin()
         verify(view, never()).openNextScreen()
+    }
+
+    @Test
+    fun shouldNotShowErrorWhenLoginSucceeds() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        doLogin()
+        verify(view, never()).showError()
     }
 
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {

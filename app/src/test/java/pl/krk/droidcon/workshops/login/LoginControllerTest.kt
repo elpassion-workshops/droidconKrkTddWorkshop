@@ -1,7 +1,6 @@
 package pl.krk.droidcon.workshops.login
 
 import com.nhaarman.mockito_kotlin.*
-import org.junit.Before
 import org.junit.Test
 import rx.Observable
 
@@ -70,6 +69,7 @@ class LoginControllerTest {
         verify(view, never()).showError()
     }
 
+
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {
         controller.onLogin(email, password)
     }
@@ -79,32 +79,3 @@ class LoginControllerTest {
     }
 }
 
-class LoginController(private val api: Login.Api, private val view : Login.View) {
-
-    private val EMAIL_PATTERN = ".+@.+".toRegex()
-
-    fun onLogin(email: String, password: String) {
-        if (password.isEmpty() || !email.isEmailValid()) {
-            return
-        }
-        api.login(email, password).subscribe(
-                {view.openNextScreen()},
-                {view.showError()})
-    }
-
-    private fun String.isEmailValid(): Boolean {
-        return isNotEmpty() && matches(EMAIL_PATTERN)
-    }
-
-}
-
-interface Login {
-    interface Api {
-        fun login(login: String, password: String) : Observable<Unit>
-    }
-
-    interface View {
-        fun openNextScreen()
-        fun showError()
-    }
-}

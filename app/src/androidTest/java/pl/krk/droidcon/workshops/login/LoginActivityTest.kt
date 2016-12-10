@@ -6,6 +6,7 @@ import android.support.test.rule.ActivityTestRule
 import android.text.InputType
 import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
@@ -76,7 +77,45 @@ class LoginActivityTest {
     @Test
     fun shouldNotShowErrorWhenLoginPass() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        onId(R.id.loginEmailInput).typeText("email")
+        onId(R.id.loginPasswordInput).typeText("password")
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isNotDisplayed()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenEmailEmpty() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(any()))
+        onId(R.id.loginEmailInput).typeText("")
+        onId(R.id.loginPasswordInput).typeText("password")
+        onId(R.id.loginButton).click()
+        onId(R.id.loginError).isDisplayed()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenPasswordEmpty() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        onId(R.id.loginEmailInput).typeText("email")
+        onId(R.id.loginPasswordInput).typeText("")
+        onId(R.id.loginButton).click()
+        onId(R.id.loginError).isDisplayed()
+    }
+
+    @Test
+    fun shouldBlockLoginButtonOnLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        onId(R.id.loginEmailInput).typeText("email")
+        onId(R.id.loginPasswordInput).typeText("password")
+        onId(R.id.loginButton).click()
+        onId(R.id.loginButton).isDisabled()
+    }
+
+    @Test
+    fun showProgressLoaderWhenLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        onId(R.id.loginEmailInput).typeText("email")
+        onId(R.id.loginPasswordInput).typeText("password")
+        onId(R.id.loginButton).click()
+        onId(R.id.loginProgressView).isDisplayed()
     }
 }

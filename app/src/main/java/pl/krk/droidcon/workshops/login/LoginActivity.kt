@@ -8,6 +8,9 @@ import pl.krk.droidcon.workshops.R
 import rx.schedulers.Schedulers
 
 class LoginActivity : AppCompatActivity(), Login.View {
+    override fun disableLoginButton() {
+        loginButton.isEnabled = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +20,10 @@ class LoginActivity : AppCompatActivity(), Login.View {
             }
         }, Schedulers.immediate(), Schedulers.immediate())
         loginButton.setOnClickListener {
-            loginController.onLogin("email@test.pl", "password")
+            loginController.onLogin(
+                    loginEmailInput.text.toString(),
+                    loginPasswordInput.text.toString()
+            )
         }
     }
 
@@ -29,6 +35,7 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun showLoader() {
+        loginProgressView.visibility = View.VISIBLE
     }
 
     override fun hideLoader() {

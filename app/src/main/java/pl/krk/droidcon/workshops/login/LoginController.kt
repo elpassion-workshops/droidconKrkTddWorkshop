@@ -18,12 +18,15 @@ class LoginController(private val api: Login.Api,
                     .handleLoader(view)
                     .subscribeOn(subscribeOnScheduler)
                     .observeOn(observeOnScheduler)
-                    .doOnNext { userStorage.saveUserData(it) }
+                    .doOnNext { userStorage.saveUserData(it)
+                    view.disableLoginButton() }
                     .subscribe({
                         view.gotoHomeScreen()
                     }, {
                         view.showError()
                     })
+        } else {
+            view.showError()
         }
     }
 

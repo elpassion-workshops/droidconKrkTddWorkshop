@@ -142,6 +142,26 @@ class LoginControllerTest {
         verify(view, times(1)).gotoHomeScreen()
     }
 
+    @Test
+    fun shouldShowErrorMessageWhenEmailIsEmpty() {
+        whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
+        val scheduler = TestScheduler()
+        val controller = LoginController(api, view, userStorage, Schedulers.immediate(), scheduler)
+        controller.onLogin("", "dshfgas")
+        scheduler.triggerActions()
+        verify(view).showError()
+    }
+
+    @Test
+    fun shouldDisableLoginButtonWhenLoginClicked() {
+        whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
+        val scheduler = TestScheduler()
+        val controller = LoginController(api, view, userStorage, Schedulers.immediate(), scheduler)
+        controller.onLogin("233", "dshfgas")
+        scheduler.triggerActions()
+        verify(view).disableLoginButton()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "some-password") {
         controller.onLogin(email, password)
     }

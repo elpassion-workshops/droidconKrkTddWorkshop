@@ -6,7 +6,8 @@ import org.junit.Test
 class LoginControllerTest {
 
     private val api = mock<Login.Api>()
-    private val controller = LoginController(api)
+    private val view = mock<Login.View>()
+    private val controller = LoginController(api, view)
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -44,22 +45,36 @@ class LoginControllerTest {
         verify(api, never()).login(any(), any())
     }
 
+    @Test
+    fun shouldShowErrorMessageWhenApiFailed() {
+        controller.onLogin("any login", "any password")
+
+        com.nhaarman.mockito_kotlin.whenever(api.login(any(), any())).thenReturn(false)
+
+        verify(view).displayErrorMessage()
+    }
 }
 
-class LoginController(private val api: Login.Api) {
+class LoginController(private val api: Login.Api, private val view: Login.View) {
     fun onLogin(email: String, password: String) {
         if (password.isEmpty() || email.isEmpty()) {
             return
         }
 
-        api.login(email, password)
+        val result = api.login(email, password)
+        if (!result) {
+            view.displayErrorMessage()
+        }
     }
-
-
 }
+
 
 interface Login {
     interface Api {
-        fun login(s: String, password: String)
+        fun login(s: String, password: String): Boolean
+    }
+
+    interface View {
+        fun displayErrorMessage()
     }
 }

@@ -12,6 +12,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedCredentials() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         doLogin("email@test.pl", "password2")
         verify(api).login("email@test.pl", "password2")
     }
@@ -54,6 +55,13 @@ class LoginControllerTest {
         verify(view).showError()
     }
 
+    @Test
+    fun shouldNotOpenNewScreenWhenLoginFails() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        doLogin()
+        verify(view, never()).openNextScreen()
+    }
+
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {
         controller.onLogin(email, password)
     }
@@ -68,11 +76,12 @@ class LoginController(private val api: Login.Api, private val view : Login.View)
     private val EMAIL_PATTERN = ".+@.+".toRegex()
 
     fun onLogin(email: String, password: String) {
-        if (password.isNotEmpty() && email.isEmailValid()) {
-            api.login(email, password)
+        if (password.isEmpty() || !email.isEmailValid()) {
+            return
         }
-        view.showError()
-        view.openNextScreen()
+        api.login(email, password).subscribe(
+                {view.openNextScreen()},
+                {view.showError()})
     }
 
     private fun String.isEmailValid(): Boolean {

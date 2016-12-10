@@ -1,9 +1,11 @@
 package pl.krk.droidcon.workshops.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.login_activity.*
+import pl.krk.droidcon.workshops.MainActivity
 import pl.krk.droidcon.workshops.R
 import rx.schedulers.Schedulers
 
@@ -32,6 +34,7 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun gotoHomeScreen() {
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     override fun showLoader() {

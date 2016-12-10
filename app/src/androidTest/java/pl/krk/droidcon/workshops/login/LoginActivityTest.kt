@@ -1,6 +1,10 @@
 package pl.krk.droidcon.workshops.login
 
+import android.support.test.espresso.Espresso
+import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.intent.Intents
+import android.support.test.espresso.intent.matcher.IntentMatchers
 import android.support.test.espresso.matcher.ViewMatchers.withInputType
 import android.support.test.rule.ActivityTestRule
 import android.text.InputType
@@ -12,6 +16,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import pl.krk.droidcon.workshops.MainActivity
 import pl.krk.droidcon.workshops.R
 import rx.Observable
 
@@ -85,7 +90,7 @@ class LoginActivityTest {
 
     @Test
     fun shouldShowErrorMessageWhenEmailEmpty() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(any()))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
         onId(R.id.loginEmailInput).typeText("")
         onId(R.id.loginPasswordInput).typeText("password")
         onId(R.id.loginButton).click()
@@ -118,4 +123,16 @@ class LoginActivityTest {
         onId(R.id.loginButton).click()
         onId(R.id.loginProgressView).isDisplayed()
     }
+
+    @Test
+    fun shouldOpenMainActivityOnLogin() {
+        Intents.init()
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        onId(R.id.loginEmailInput).typeText("email")
+        onId(R.id.loginPasswordInput).typeText("password")
+        onId(R.id.loginButton).click()
+        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
+        Intents.release()
+    }
+
 }

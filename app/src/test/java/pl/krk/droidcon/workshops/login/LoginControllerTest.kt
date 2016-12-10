@@ -29,7 +29,7 @@ class LoginControllerTest {
     @Test
     fun shouldCallApiWithProvidePassword() {
         controller.onLogin(email = "email@test.pl", password = "password")
-        verify(api).login(s = any(), password = eq("password" ))
+        verify(api).login(email = any(), password = eq("password" ))
     }
 }
 
@@ -43,6 +43,6 @@ class LoginController(private val api: Login.Api) {
 
 interface Login {
     interface Api {
-        fun login(s: String, password: String)
+        fun login(email: String, password: String)
     }
 }

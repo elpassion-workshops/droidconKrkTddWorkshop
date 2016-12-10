@@ -12,27 +12,19 @@ class LoginControllerTest {
     private val controller = LoginController(api)
 
     @Test
-    fun shouldCallApiWithProvidedEmail() {
-        controller.onLogin("email@test.pl", "password")
-        verify(api).login("email@test.pl", "password")
+    fun shouldCallApiWithProvidedCredentials() {
+        doLogin("email@test.pl", "password2")
+        verify(api).login("email@test.pl", "password2")
     }
 
     @Test
     fun shouldNotCallApiWhenEmailIsEmpty() {
-        controller.onLogin(email = "", password = "password")
+        doLogin(email = "", password = "password")
         verify(api, never()).login(any(), any())
     }
 
-    @Test
-    fun shouldCallApiWithProvidedPassword() {
-        controller.onLogin("email@test.pl", "password")
-        verify(api).login("email@test.pl", "password")
-    }
-
-    @Test
-    fun shouldReallyCallApiWithProvidedPassword() {
-        controller.onLogin("email@test.pl", "password2")
-        verify(api).login("email@test.pl", "password2")
+    private fun doLogin(email: String = "email@test.pl", password : String = "password") {
+        controller.onLogin(email, password)
     }
 }
 

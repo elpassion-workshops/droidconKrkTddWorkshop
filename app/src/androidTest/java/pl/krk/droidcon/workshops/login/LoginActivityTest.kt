@@ -106,7 +106,17 @@ class LoginActivityTest {
     @Test
     fun shouldShowProgressBarWhenLoginStarted() {
         whenever(api.login(any(), any())).thenReturn(Observable.never())
+        enterProperCredentials()
         onId(R.id.loginButton).click()
         onId(R.id.loginProgressBar).isDisplayed()
+    }
+
+    @Test
+    fun shouldNotShowProgressWhenLoginSuccessful() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        enterProperCredentials()
+        onId(R.id.loginButton).click()
+        onId(R.id.loginError).isNotDisplayed()
+        onId(R.id.loginProgressBar).isNotDisplayed()
     }
 }

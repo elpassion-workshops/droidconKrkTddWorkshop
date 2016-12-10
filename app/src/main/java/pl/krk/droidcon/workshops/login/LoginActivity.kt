@@ -32,8 +32,10 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun showLoader() {
+        loginProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideLoader() {
+        loginProgressBar.visibility = View.GONE
     }
 }

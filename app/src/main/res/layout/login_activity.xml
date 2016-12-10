@@ -39,9 +39,9 @@
         android:text="@string/loginErrorText"/>
 
     <View
+        android:id="@+id/loginProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/loginProgressBar"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </LinearLayout>

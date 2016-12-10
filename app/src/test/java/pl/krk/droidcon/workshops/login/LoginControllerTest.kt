@@ -1,15 +1,14 @@
 package pl.krk.droidcon.workshops.login
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
+import rx.Observable
 
 class LoginControllerTest {
 
     private val api = mock<Login.Api>()
-    private val controller = LoginController(api)
+    private val view = mock<Login.View>()
+    private val controller = LoginController(api, view)
 
     @Test
     fun shouldCallApiWithProvidedCredentials() {
@@ -41,6 +40,13 @@ class LoginControllerTest {
         verifyLoginNotCalled()
     }
 
+    @Test
+    fun shouldOpenNewScreenWhenLoginCalled() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        doLogin()
+        verify(view).openNextScreen()
+    }
+
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {
         controller.onLogin(email, password)
     }
@@ -50,7 +56,7 @@ class LoginControllerTest {
     }
 }
 
-class LoginController(private val api: Login.Api) {
+class LoginController(private val api: Login.Api, private val view : Login.View) {
 
     private val EMAIL_PATTERN = ".+@.+".toRegex()
 
@@ -58,6 +64,7 @@ class LoginController(private val api: Login.Api) {
         if (password.isNotEmpty() && email.isEmailValid()) {
             api.login(email, password)
         }
+        view.openNextScreen()
     }
 
     private fun String.isEmailValid(): Boolean {
@@ -68,6 +75,10 @@ class LoginController(private val api: Login.Api) {
 
 interface Login {
     interface Api {
-        fun login(login: String, password: String)
+        fun login(login: String, password: String) : Observable<Unit>
+    }
+
+    interface View {
+        fun openNextScreen()
     }
 }

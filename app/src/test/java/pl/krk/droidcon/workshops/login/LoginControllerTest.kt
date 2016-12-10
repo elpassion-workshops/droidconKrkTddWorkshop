@@ -145,8 +145,10 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldNotStoreUserDataWhenUnsuccess() {
-
+    fun shouldNotStoreUserDataWhenUnsuccessful() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        login()
+        verify(userRepository, never()).saveUser()
     }
 
     @Test
@@ -184,14 +186,14 @@ class LoginController(private val api: Login.Api, private val view: View, privat
         })
     }
 
-    private fun loginSuccess() {
-        userRepository.saveUser()
-        view.openNextScreen()
-    }
-
     private fun updateUiOnLoginClicked() {
         view.showProgressLoader()
         view.hideErrorMessage()
+    }
+
+    private fun loginSuccess() {
+        userRepository.saveUser()
+        view.openNextScreen()
     }
 
     private fun isEmailValid(email: String): Boolean {

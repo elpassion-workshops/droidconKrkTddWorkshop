@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
+import rx.functions.Action1
 
 class LoginControllerTest {
 
@@ -77,6 +78,13 @@ class LoginControllerTest {
         verify(view).openNextScreen()
     }
 
+    @Test
+    fun shouldShowErrorIfApiCallIsNotSuccessful() {
+        whenever(api.login("email2@test.pl","passw2")).thenReturn(Observable.error(Exception("Login failed")))
+        login("email2@test.pl","passw2")
+        verify(view).showLoginFailed()
+    }
+
     private fun login(email: String = "asd@test.pl", password: String = "password") {
         controller.onLogin(email = email, password = password)
     }
@@ -89,7 +97,8 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
             if (email.matches(EMAIL_REGEX)) {
                 api.login(email, password).subscribe({
                     view.openNextScreen()
-                })
+                }, {})
+                view.showLoginFailed()
             }
         }
         else {
@@ -110,5 +119,6 @@ interface Login {
     interface View {
         fun showEmptyCredentialsError()
         fun openNextScreen()
+        fun showLoginFailed()
     }
 }

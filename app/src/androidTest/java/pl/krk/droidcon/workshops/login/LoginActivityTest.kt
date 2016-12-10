@@ -34,6 +34,11 @@ class LoginActivityTest {
         checkTypedTextIsDisplayedInInput("secret", R.id.loginPasswordInput)
     }
 
+    @Test
+    fun shouldPasswordHintBeVisible() {
+        onText(R.string.loginPasswordHeader).isDisplayed()
+    }
+
     private fun checkTypedTextIsDisplayedInInput(text: String, viewId: Int) {
         onId(viewId)
                 .isDisplayed()

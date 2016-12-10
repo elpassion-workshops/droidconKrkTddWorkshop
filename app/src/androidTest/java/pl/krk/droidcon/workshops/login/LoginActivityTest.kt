@@ -78,4 +78,11 @@ class LoginActivityTest {
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isNotDisplayed()
     }
+
+    @Test
+    fun shouldShowProgressBarWhenLoginStarted() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        onId(R.id.loginButton).click()
+        onId(R.id.loginProgressBar).isDisplayed()
+    }
 }

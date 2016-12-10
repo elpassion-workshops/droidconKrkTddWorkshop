@@ -4,7 +4,6 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
-import rx.functions.Action1
 
 class LoginControllerTest {
 

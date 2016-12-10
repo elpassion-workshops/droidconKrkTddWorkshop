@@ -49,14 +49,14 @@ class LoginControllerTest {
     fun shouldShowErrorMessageWhenEmailEmpty() {
         login(email = "")
 
-        verify(view).showEmptyEmailError()
+        verify(view).showEmptyCredentialsError()
     }
 
     @Test
     fun shouldShowErrorMessageWhenPasswordIsEmpty() {
         login( password = "")
 
-        verify(view).showEmptyEmailError()
+        verify(view).showEmptyCredentialsError()
     }
 
     private fun login(email: String = "asd@test.pl", password: String = "password") {
@@ -71,7 +71,7 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
             api.login(email, password)
         }
         else {
-            view.showEmptyEmailError()
+            view.showEmptyCredentialsError()
         }
     }
 }
@@ -82,7 +82,7 @@ interface Login {
     }
 
     interface View {
-        fun showEmptyEmailError()
+        fun showEmptyCredentialsError()
 
     }
 }

@@ -23,12 +23,11 @@ class LoginActivityTest {
 
     @Rule
     @JvmField
-    val rule = ActivityTestRule(LoginActivity::class.java, false, false)
+    val rule = ActivityTestRule(LoginActivity::class.java)
 
     @Before
     fun setUp() {
         LoginApiProvider.override = api
-        rule.launchActivity(null)
     }
 
     @Test
@@ -65,13 +64,24 @@ class LoginActivityTest {
 
     @Test
     fun shouldLoginWhenClickLoginButton() {
-        val api = mock<Login.Api>()
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
 
         onId(R.id.loginEmailInput).typeText("any login")
         onId(R.id.loginPasswordInput).typeText("any password")
         onId(R.id.loginButton).click()
 
         verify(api).login(any(), any())
+    }
+
+    @Test
+    fun shouldLoginWhenClickLoginButtonIsNotHardcoded() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+
+        onId(R.id.loginEmailInput).typeText("any login")
+        onId(R.id.loginPasswordInput).typeText("any password")
+        onId(R.id.loginButton).click()
+
+        verify(api).login("any login", "any password")
     }
 
     @Test
@@ -89,6 +99,9 @@ class LoginActivityTest {
     @Test
     fun shouldShowErrorWhenLoginFails() {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+
+        onId(R.id.loginEmailInput).typeText("any login")
+        onId(R.id.loginPasswordInput).typeText("any password")
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isDisplayed()
     }
@@ -96,6 +109,7 @@ class LoginActivityTest {
     @Test
     fun shouldNotShowErrorWhenLoginPass() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isNotDisplayed()
     }

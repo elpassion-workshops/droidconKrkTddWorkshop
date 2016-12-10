@@ -13,44 +13,48 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
-        controller.onLogin("email@test.pl", "password")
+        login()
         verify(api).login("email@test.pl", "password")
     }
 
     @Test
     fun shouldReallyCallApiWithProvidedEmail() {
-        controller.onLogin("email2@test.pl", "password")
+        login("email2@test.pl", "password")
         verify(api).login("email2@test.pl", "password")
     }
 
     @Test
     fun shouldNotCallApiWhenEmailIsEmpty() {
-        controller.onLogin(email = "", password = "password")
+        login(email = "", password = "password")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldNotCallApiWhenEmailDoesntHaveAtChar() {
-        controller.onLogin("emailtest.pl", "password")
+        login("emailtest.pl", "password")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldNotCallApiWhenEmailDoesntHaveDot() {
-        controller.onLogin("email@testpl", "password")
+        login("email@testpl", "password")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldNotCallApiWhenEmailDoesntHaveDotAfterAtSign() {
-        controller.onLogin("email.pl@test", "password")
+        login("email.pl@test", "password")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldCallApiWithPassword() {
-        controller.onLogin("email@test.pl", "password")
+        login()
         verify(api).login("email@test.pl", "password")
+    }
+
+    private fun login(email: String = "email@test.pl", password: String = "password") {
+        controller.onLogin(email, password)
     }
 }
 

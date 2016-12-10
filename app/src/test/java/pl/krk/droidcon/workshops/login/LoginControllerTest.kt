@@ -55,17 +55,15 @@ class LoginController(private val api: Login.Api) {
     private val EMAIL_PATTERN = ".+@.+".toRegex()
 
     fun onLogin(email: String, password: String) {
-        if (password.isEmpty()) {
-            return
+        if (password.isNotEmpty() && email.isEmailValid()) {
+            api.login(email, password)
         }
-        if (email.isEmpty()) {
-            return
-        }
-        if (!email.matches(EMAIL_PATTERN)) {
-            return
-        }
-        api.login(email, password)
     }
+
+    private fun String.isEmailValid(): Boolean {
+        return isNotEmpty() && matches(EMAIL_PATTERN)
+    }
+
 }
 
 interface Login {

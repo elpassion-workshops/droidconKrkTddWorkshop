@@ -139,9 +139,20 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldStoreUserData() {
+    fun shouldStoreUserDataWhenSuccess() {
         login()
         verify(userRepository).saveUser()
+    }
+
+    @Test
+    fun shouldNotStoreUserDataWhenUnsuccess() {
+
+    }
+
+    @Test
+    fun shouldUnsubscribeOnDestroy() {
+        controller.onDestroy()
+        verify(view, never()).hideProgressLoader()
     }
 
     private fun login(email: String = "email@test.pl", password: String = "password") {

@@ -74,4 +74,9 @@ class LoginActivityTest {
                 .isDisplayed()
                 .hasText(R.string.loginErrorText)
     }
+
+    @Test
+    fun shouldErrorInvisibleBeforeLoginButtonClickedFirstTime() {
+        onId(R.id.errorText).isNotDisplayed()
+    }
 }

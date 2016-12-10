@@ -7,7 +7,7 @@ import rx.Subscription
 class LoginController(private val api: Login.Api,
                       private val view: Login.View,
                       private val userStorage: Login.UserStorage,
-                      private val scheduler: Scheduler,
+                      private val observeOnScheduler: Scheduler,
                       private val subscribeOnScheduler: Scheduler) {
 
     private var subscription: Subscription? = null
@@ -17,7 +17,7 @@ class LoginController(private val api: Login.Api,
             subscription = api.login(email, password)
                     .handleLoader(view)
                     .subscribeOn(subscribeOnScheduler)
-                    .observeOn(scheduler)
+                    .observeOn(observeOnScheduler)
                     .subscribe({
                         userStorage.saveUserData(it)
                         view.gotoHomeScreen()

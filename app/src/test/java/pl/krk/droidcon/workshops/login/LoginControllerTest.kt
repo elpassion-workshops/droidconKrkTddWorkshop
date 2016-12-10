@@ -13,45 +13,51 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
-        controller.onLogin("email@test.pl")
-        verify(api).login("email@test.pl")
+        controller.onLogin("email@test.pl", "password")
+        verify(api).login("email@test.pl", "password")
     }
 
     @Test
     fun shouldReallyCallApiWithProvidedEmail() {
-        controller.onLogin("email2@test.pl")
-        verify(api).login("email2@test.pl")
+        controller.onLogin("email2@test.pl", "password")
+        verify(api).login("email2@test.pl", "password")
     }
 
     @Test
     fun shouldNotCallApiWhenEmailIsEmpty() {
-        controller.onLogin(email = "")
-        verify(api, never()).login(any())
+        controller.onLogin(email = "", password = "password")
+        verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldNotCallApiWhenEmailDoesntHaveAtChar() {
-        controller.onLogin("emailtest.pl")
-        verify(api, never()).login(any())
+        controller.onLogin("emailtest.pl", "password")
+        verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldNotCallApiWhenEmailDoesntHaveDot() {
-        controller.onLogin("email@testpl")
-        verify(api, never()).login(any())
+        controller.onLogin("email@testpl", "password")
+        verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldNotCallApiWhenEmailDoesntHaveDotAfterAtSign() {
-        controller.onLogin("email.pl@test")
-        verify(api, never()).login(any())
+        controller.onLogin("email.pl@test", "password")
+        verify(api, never()).login(any(), any())
+    }
+
+    @Test
+    fun shouldCallApiWithPassword() {
+        controller.onLogin("email@test.pl", "password")
+        verify(api).login("email@test.pl", "password")
     }
 }
 
 class LoginController(private val api: Login.Api) {
-    fun onLogin(email: String) {
+    fun onLogin(email: String, password: String) {
         if (isEmailValid(email)) {
-            api.login(email)
+            api.login(email, "password")
         }
     }
 
@@ -62,6 +68,6 @@ class LoginController(private val api: Login.Api) {
 
 interface Login {
     interface Api {
-        fun login(s: String)
+        fun login(s: String, password: String)
     }
 }

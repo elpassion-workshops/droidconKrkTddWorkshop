@@ -77,18 +77,25 @@ class LoginControllerTest {
 
     @Test
     fun shouldHideLoaderAfterApiCallCompletes() {
+        whenever(api.login(any(), any())) doReturn Observable.just(Unit)
         controller.onLogin("email@email.pl", "some-password")
         verify(view).hideLoader()
+    }
+
+    @Test
+    fun shouldNotHideLoaderUntilApiCallCompletes() {
+        whenever(api.login(any(), any())) doReturn Observable.never()
+        controller.onLogin("email@email.pl", "some-password")
+        verify(view, never()).hideLoader()
     }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
     fun onLogin(email: String, password: String) {
-        view.hideLoader()
         if (email.isNotEmpty() && password.isNotEmpty()) {
             view.showLoader()
             api.login(email, password)
-                    .subscribe({ view.gotoHomeScreen() }, { view.showError() })
+                    .subscribe({ view.gotoHomeScreen() }, { view.showError() }, { view.hideLoader() })
         }
     }
 }

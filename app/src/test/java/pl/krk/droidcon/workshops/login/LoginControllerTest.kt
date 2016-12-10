@@ -6,7 +6,9 @@ import rx.Observable
 
 class LoginControllerTest {
 
-    private val api = mock<Login.Api>()
+    private val api = mock<Login.Api> {
+        on { login(any(), any()) } doReturn Observable.never()
+    }
     val view = mock<Login.View>()
     private val controller = LoginController(api, view)
 
@@ -46,15 +48,21 @@ class LoginControllerTest {
         controller.onLogin("email@test.pl", "some-password")
         verify(view).showError()
     }
+
+    @Test
+    fun shouldNotShowErrorWhenApiCallSuccess() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        controller.onLogin("email@test.pl", "some-password")
+        verify(view, never()).showError()
+    }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             api.login(email, password)
+                    .subscribe({}, { view.showError() })
         }
-
-        view.showError()
     }
 }
 

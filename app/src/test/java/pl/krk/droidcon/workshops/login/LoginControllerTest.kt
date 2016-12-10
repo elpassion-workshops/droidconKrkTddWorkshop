@@ -98,7 +98,11 @@ class LoginControllerTest {
         verify(view).showLoader()
     }
 
-
+    @Test
+    fun shouldHideLoaderAfterLoginCall() {
+        login()
+        verify(view).hideLoader()
+    }
 
     private fun login(email: String = "asd@test.pl", password: String = "password") {
         controller.onLogin(email = email, password = password)
@@ -114,6 +118,7 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
                 api.login(email, password).subscribe({
                     view.openNextScreen()
                 }, {view.showLoginFailed()})
+                view.hideLoader()
             }
         }
         else {
@@ -136,5 +141,6 @@ interface Login {
         fun openNextScreen()
         fun showLoginFailed()
         fun showLoader()
+        fun hideLoader()
     }
 }

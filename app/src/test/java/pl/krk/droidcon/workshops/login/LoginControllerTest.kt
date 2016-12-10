@@ -32,13 +32,19 @@ class LoginControllerTest {
         verify(api).login(any(), eq("password"))
     }
 
+    @Test
+    fun shouldReallyCallApiWithProvidedPassword() {
+        controller.onLogin("any login", "password2")
+        verify(api).login(any(), eq("password2"))
+    }
+
 }
 
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String, password: String) {
 
         if (email.isNotEmpty()) {
-            api.login(email, "password")
+            api.login(email, password)
         }
     }
 

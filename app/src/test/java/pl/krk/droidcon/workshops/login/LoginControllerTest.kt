@@ -15,6 +15,8 @@ class LoginControllerTest {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         login()
         verify(api).login("email@test.pl", "mypass")
+        verify(view).showLoadProgress()
+        verify(view).hideLoadProgress()
     }
 
     @Test
@@ -22,6 +24,8 @@ class LoginControllerTest {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         login()
         verify(api).login("email@test.pl", "mypass")
+        verify(view).showLoadProgress()
+        verify(view).hideLoadProgress()
     }
 
     private fun login(login: String = "email@test.pl", password: String = "mypass") {
@@ -71,12 +75,17 @@ class LoginControllerTest {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         login()
         verify(view, never()).showError(any())
+        verify(view).showLoadProgress()
+        verify(view).hideLoadProgress()
     }
 
     @Test
     fun shouldShowErrorMessageOnFailedLogin() {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
         login()
+        verify(view).showLoadProgress()
         verify(view).showError(any())
+        verify(view).hideLoadProgress()
     }
+
 }

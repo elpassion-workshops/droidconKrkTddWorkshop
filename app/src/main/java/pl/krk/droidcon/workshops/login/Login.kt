@@ -10,5 +10,7 @@ interface Login {
     interface View {
         fun showError(message: String)
         fun hideError()
+        fun showLoadProgress()
+        fun hideLoadProgress()
     }
 }

@@ -4,6 +4,7 @@ import android.support.test.espresso.Espresso
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.rule.ActivityTestRule
+import android.text.InputType
 import com.elpassion.android.commons.espresso.*
 import org.junit.Rule
 import org.junit.Test
@@ -35,5 +36,19 @@ class LoginActivityTest {
     @Test
     fun shouldPasswordHintBeVisible() {
         onText(R.string.loginPasswordHeader).isDisplayed()
+    }
+
+    @Test
+    fun shouldHaveTypedPasswordInTheInput() {
+        onId(R.id.loginPasswordInput)
+                .isDisplayed()
+                .typeText("pass")
+                .hasText("pass")
+    }
+
+    @Test
+    fun shouldPasswordInputBePasswordType() {
+        onId(R.id.loginPasswordInput)
+                .check(ViewAssertions.matches(ViewMatchers.withInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)))
     }
 }

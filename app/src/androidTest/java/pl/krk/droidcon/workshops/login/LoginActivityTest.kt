@@ -6,6 +6,7 @@ import android.support.test.rule.ActivityTestRule
 import android.text.InputType
 import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
@@ -72,21 +73,21 @@ class LoginActivityTest {
 
     @Test
     fun shouldShowErrorWhenLoginFails() {
-        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        whenever(api.login(any(), any())) doReturn Observable.error(RuntimeException())
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isDisplayed()
     }
 
     @Test
     fun shouldNotShowErrorWhenLoginPass() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        whenever(api.login(any(), any())) doReturn Observable.just(User("1"))
         onId(R.id.loginButton).click()
         onId(R.id.loginError).doesNotExist()
     }
 
     @Test
     fun shouldGoHomeWhenLoginSuccess() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        whenever(api.login(any(), any())) doReturn Observable.just(User("1"))
         onId(R.id.loginButton).click()
         checkIntent(HomeActivity::class.java)
     }

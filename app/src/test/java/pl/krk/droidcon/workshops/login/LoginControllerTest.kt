@@ -47,12 +47,22 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowErrorMessageWhenApiFailed() {
-        controller.onLogin("any login", "any password")
+        whenever(api.login(any(), any())).thenReturn(false)
 
-        com.nhaarman.mockito_kotlin.whenever(api.login(any(), any())).thenReturn(false)
+        controller.onLogin("any login", "any password")
 
         verify(view).displayErrorMessage()
     }
+
+    @Test
+    fun shouldShowErrorMessageWhenApiSucceed() {
+        whenever(api.login(any(), any())).thenReturn(true)
+
+        controller.onLogin("any login", "any password")
+
+        verify(view).goToAnotherScreen()
+    }
+
 }
 
 class LoginController(private val api: Login.Api, private val view: Login.View) {
@@ -61,8 +71,10 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
             return
         }
 
-        val result = api.login(email, password)
-        if (!result) {
+        val loginResult = api.login(email, password)
+        if (loginResult) {
+            view.goToAnotherScreen()
+        } else {
             view.displayErrorMessage()
         }
     }
@@ -76,5 +88,6 @@ interface Login {
 
     interface View {
         fun displayErrorMessage()
+        fun goToAnotherScreen()
     }
 }

@@ -3,6 +3,7 @@ package pl.krk.droidcon.workshops.login
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
+import rx.Observable
 
 class LoginControllerTest {
 
@@ -16,6 +17,7 @@ class LoginControllerTest {
 
     @Before
     fun setUp() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
         whenever(emailChecker.verifyEmail(any())).thenReturn(true)
     }
 
@@ -57,7 +59,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowLoginErrorMessageWhenLoginFailed() {
-        whenever(api.login(any(), any())).thenReturn(false)
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
 
         controller.onLogin("any login", "any password")
 
@@ -66,7 +68,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowErrorMessageWhenApiSucceed() {
-        whenever(api.login(any(), any())).thenReturn(true)
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
 
         controller.onLogin("any login", "any password")
 
@@ -82,6 +84,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldHideProgressBarWhenLoginEnd() {
+        whenever(api.login(any(), any())).thenReturn(Observable.empty())
         controller.onLogin("any login", "any password")
 
         verify(view).hideProgressBar()
@@ -95,6 +98,8 @@ class LoginControllerTest {
 
     @Test
     fun shouldShowProgressBeforeHideProgressWhenLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.empty())
+
         controller.onLogin("email2@test.pl", "password")
 
         val inOrder = inOrder(view, api)
@@ -154,18 +159,22 @@ class LoginController(private val api: Login.Api,
 
         view.displayProgressBar()
         val loginResult = api.login(email, password)
-        view.hideProgressBar()
-        if (loginResult) {
+        loginResult.subscribe({
+            view.hideProgressBar()
             view.goToAnotherScreen()
-        } else {
+
+        },{
+            view.hideProgressBar()
             view.displayErrorMessage(ERR_CANNOT_LOGIN)
-        }
+        }, {
+            view.hideProgressBar()
+        })
     }
 }
 
 interface Login {
     interface Api {
-        fun login(s: String, password: String): Boolean
+        fun login(s: String, password: String): Observable<Unit>
     }
 
     interface View {

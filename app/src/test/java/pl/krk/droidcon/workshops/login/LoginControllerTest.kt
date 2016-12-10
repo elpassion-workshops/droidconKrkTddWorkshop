@@ -14,7 +14,7 @@ class LoginControllerTest {
 
     @Before
     fun setup() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(createUserInfo()))
     }
 
     @Test
@@ -73,7 +73,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldOpenNextScreenIfApiCallIsSuccessful() {
-        whenever(api.login("email@test.pl","passw")).thenReturn(Observable.just(Unit))
+        whenever(api.login("email@test.pl","passw")).thenReturn(Observable.just(createUserInfo()))
         login("email@test.pl","passw")
         verify(view).openNextScreen()
     }
@@ -87,7 +87,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldNotShowLoginFailedOnApiCAllSuccess() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(createUserInfo()))
         login()
         verify(view, never()).showLoginFailed()
     }
@@ -115,6 +115,9 @@ class LoginControllerTest {
         controller.onLogin(email = email, password = password)
     }
 
+    private fun createUserInfo(token : String = "some_token") : UserInfo {
+        return UserInfo(token)
+    }
 }
 
 class LoginController(private val api: Login.Api, private val view: Login.View) {
@@ -141,7 +144,7 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
 
 interface Login {
     interface Api {
-        fun login(email: String, password: String) : Observable<Unit>
+        fun login(email: String, password: String) : Observable<UserInfo>
     }
 
     interface View {
@@ -152,3 +155,5 @@ interface Login {
         fun hideLoader()
     }
 }
+
+class UserInfo (private val token : String)

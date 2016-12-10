@@ -18,10 +18,6 @@ class LoginActivityTest {
     @Test
     fun shouldEmailHintBeVisible() {
         onText(R.string.loginEmailHeader).isDisplayed()
-
-        // version without android.commons below
-        Espresso.onView(ViewMatchers.withText(R.string.loginEmailHeader))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
     
     @Test
@@ -30,5 +26,10 @@ class LoginActivityTest {
                 .isDisplayed()
                 .typeText("email@test.pl")
                 .hasText("email@test.pl")
+    }
+
+    @Test
+    fun shouldPasswordHintBeVisible() {
+        onText(R.string.loginPasswordHeader).isDisplayed()
     }
 }

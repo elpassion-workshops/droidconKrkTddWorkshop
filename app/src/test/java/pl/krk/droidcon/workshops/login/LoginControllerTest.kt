@@ -158,17 +158,15 @@ class LoginController(private val api: Login.Api,
         }
 
         view.displayProgressBar()
-        val loginResult = api.login(email, password)
-        loginResult.subscribe({
-            view.hideProgressBar()
-            view.goToAnotherScreen()
-
-        },{
-            view.hideProgressBar()
-            view.displayErrorMessage(ERR_CANNOT_LOGIN)
-        }, {
-            view.hideProgressBar()
-        })
+        api.login(email, password)
+                .doOnTerminate {
+                    view.hideProgressBar()
+                }
+                .subscribe({
+                    view.goToAnotherScreen()
+                }, {
+                    view.displayErrorMessage(ERR_CANNOT_LOGIN)
+                })
     }
 }
 

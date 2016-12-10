@@ -31,7 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <View
+    <TextView
+        android:text="Error"
         android:id="@+id/loginError"
         android:visibility="gone"
         android:layout_width="wrap_content"

@@ -55,13 +55,20 @@ class LoginControllerTest {
         controller.onLogin("email@test.pl", "some-password")
         verify(view, never()).showError()
     }
+
+    @Test
+    fun shouldMoveToHomeScreenWhenApiCallSucceed() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        controller.onLogin("email@test.pl", "some-password")
+        verify(view).gotoHomeScreen()
+    }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             api.login(email, password)
-                    .subscribe({}, { view.showError() })
+                    .subscribe({view.gotoHomeScreen()}, { view.showError() })
         }
     }
 }
@@ -73,6 +80,10 @@ interface Login {
 
     interface View {
         fun showError() {
+
+        }
+
+        fun gotoHomeScreen() {
 
         }
 

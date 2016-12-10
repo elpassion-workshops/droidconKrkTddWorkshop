@@ -10,4 +10,9 @@
         android:layout_height="wrap_content"
         android:text="@string/loginEmailHeader"/>
 
+    <EditText
+        android:id="@+id/loginEmailInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

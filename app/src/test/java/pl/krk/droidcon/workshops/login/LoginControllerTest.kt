@@ -63,6 +63,36 @@ class LoginControllerTest {
         verify(view).goToAnotherScreen()
     }
 
+    @Test
+    fun shouldShowProgressBarWhenLogin() {
+        controller.onLogin("any login", "any password")
+
+        verify(view).displayProgressBar()
+    }
+
+    @Test
+    fun shouldHideProgressBarWhenLoginEnd() {
+        controller.onLogin("any login", "any password")
+
+        verify(view).hideProgressBar()
+    }
+
+    @Test
+    fun shouldShowProgressBefore() {
+        controller.onLogin("email2@test.pl", "password")
+        verify(api).login(any(), eq("password"))
+    }
+
+    @Test
+    fun shouldShowProgressBeforeHideProgressWhenLogin() {
+        controller.onLogin("email2@test.pl", "password")
+
+        val inOrder = inOrder(view, api)
+        inOrder.verify(view).displayProgressBar()
+        inOrder.verify(api).login(any(), any())
+        inOrder.verify(view).hideProgressBar()
+
+    }
 }
 
 class LoginController(private val api: Login.Api, private val view: Login.View) {
@@ -71,7 +101,9 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
             return
         }
 
+        view.displayProgressBar()
         val loginResult = api.login(email, password)
+        view.hideProgressBar()
         if (loginResult) {
             view.goToAnotherScreen()
         } else {
@@ -79,7 +111,6 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
         }
     }
 }
-
 
 interface Login {
     interface Api {
@@ -89,5 +120,8 @@ interface Login {
     interface View {
         fun displayErrorMessage()
         fun goToAnotherScreen()
+
+        fun displayProgressBar()
+        fun hideProgressBar()
     }
 }

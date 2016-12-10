@@ -40,6 +40,12 @@ class LoginControllerTest {
         controller.onLogin("email@testpl")
         verify(api, never()).login(any())
     }
+
+    @Test
+    fun shouldNotCallApiWhenEmailDoesntHaveDotAfterAtSign() {
+        controller.onLogin("email.pl@test")
+        verify(api, never()).login(any())
+    }
 }
 
 class LoginController(private val api: Login.Api) {
@@ -49,7 +55,9 @@ class LoginController(private val api: Login.Api) {
         }
     }
 
-    private fun isEmailValid(email: String) = email.isNotEmpty() && email.contains("@") && email.contains(".")
+    private fun isEmailValid(email: String) : Boolean {
+        return email.matches(Regex(".*@.*\\..*"))
+    }
 }
 
 interface Login {

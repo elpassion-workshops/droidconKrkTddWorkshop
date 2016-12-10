@@ -24,6 +24,8 @@ class LoginController(private val api: Login.Api,
                     }, {
                         view.showError()
                     })
+        } else {
+            view.showError()
         }
     }
 

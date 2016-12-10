@@ -3,7 +3,6 @@ package pl.krk.droidcon.workshops.login
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
-
 import rx.Observable
 import rx.Subscription
 
@@ -145,24 +144,34 @@ class LoginControllerTest {
 
 class LoginController(private val api: Login.Api, private val view: View) {
 
-    var loginSubscripiton : Subscription? = null
+    var loginSubscripiton: Subscription? = null
 
     fun onLogin(email: String, password: String) {
-        if (isEmailValid(email) && password.isNotEmpty()) {
-            loginSubscripiton = api.login(email, password).doOnSubscribe {
-                view.showProgressLoader()
-                view.hideErrorMessage()
-            }.doOnUnsubscribe {
-                view.hideProgressLoader()
-            }.subscribe({
-                view.openNextScreen()
-            }, {
-                view.showErrorMessage()
-            })
+        if (areCredentialsValid(email, password)) {
+            performApiLogin(email, password)
         }
     }
 
-    private fun isEmailValid(email: String) : Boolean {
+    private fun areCredentialsValid(email: String, password: String) = isEmailValid(email) && password.isNotEmpty()
+
+    private fun performApiLogin(email: String, password: String) {
+        loginSubscripiton = api.login(email, password).doOnSubscribe {
+            updateUiOnLoginClicked()
+        }.doOnUnsubscribe {
+            view.hideProgressLoader()
+        }.subscribe({
+            view.openNextScreen()
+        }, {
+            view.showErrorMessage()
+        })
+    }
+
+    private fun updateUiOnLoginClicked() {
+        view.showProgressLoader()
+        view.hideErrorMessage()
+    }
+
+    private fun isEmailValid(email: String): Boolean {
         return email.matches(Regex(".*@.*\\..*"))
     }
 
@@ -173,7 +182,7 @@ class LoginController(private val api: Login.Api, private val view: View) {
 
 interface Login {
     interface Api {
-        fun login(s: String, password: String) : Observable<Unit>
+        fun login(s: String, password: String): Observable<Unit>
     }
 }
 

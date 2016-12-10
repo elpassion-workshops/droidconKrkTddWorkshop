@@ -108,6 +108,13 @@ class LoginControllerTest {
         verify(view).hideProgressLoader()
     }
 
+    @Test
+    fun shouldNotHideProgressWhenNothingIsReturned() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        login()
+        verify(view, never()).hideProgressLoader()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
@@ -121,8 +128,9 @@ class LoginController(private val api: Login.Api, private val view: View) {
                 view.openNextScreen()
             }, {
                 view.showErrorMessage()
+            }, {
+                view.hideProgressLoader()
             })
-            view.hideProgressLoader()
         }
     }
 

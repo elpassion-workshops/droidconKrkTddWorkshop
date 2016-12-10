@@ -12,6 +12,7 @@ interface Login {
         fun gotoHomeScreen()
         fun showLoader()
         fun hideLoader()
+        fun disableLoginButton()
     }
 
     interface UserStorage {

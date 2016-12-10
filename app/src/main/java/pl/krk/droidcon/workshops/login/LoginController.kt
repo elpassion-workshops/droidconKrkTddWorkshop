@@ -35,6 +35,9 @@ class LoginController(private val api: Login.Api,
     }
 
     private fun <T> Observable<T>.handleLoader(view: Login.View) = this
-            .doOnSubscribe { view.showLoader() }
+            .doOnSubscribe {
+                view.showLoader()
+                view.disableLoginButton()
+            }
             .doOnUnsubscribe { view.hideLoader() }
 }

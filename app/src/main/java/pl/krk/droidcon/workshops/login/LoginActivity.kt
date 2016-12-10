@@ -31,6 +31,10 @@ class LoginActivity : AppCompatActivity(), Login.View {
     override fun gotoHomeScreen() {
     }
 
+    override fun disableLoginButton() {
+        loginButton.isEnabled = false
+    }
+
     override fun showLoader() {
         loginProgressBar.visibility = View.VISIBLE
     }

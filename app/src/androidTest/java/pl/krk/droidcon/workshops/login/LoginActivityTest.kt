@@ -76,12 +76,12 @@ class LoginActivityTest {
     @Test
     fun shouldNotShowErrorWhenLoginPass() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
-        enterProperCredentials()
+        enterCredentials()
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isNotDisplayed()
     }
 
-    private fun enterProperCredentials() {
+    private fun enterCredentials() {
         onId(R.id.loginEmailInput)
                 .typeText("email@test.pl")
         Espresso.closeSoftKeyboard()
@@ -106,7 +106,7 @@ class LoginActivityTest {
     @Test
     fun shouldShowProgressBarWhenLoginStarted() {
         whenever(api.login(any(), any())).thenReturn(Observable.never())
-        enterProperCredentials()
+        enterCredentials()
         onId(R.id.loginButton).click()
         onId(R.id.loginProgressBar).isDisplayed()
     }
@@ -114,9 +114,26 @@ class LoginActivityTest {
     @Test
     fun shouldNotShowProgressWhenLoginSuccessful() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
-        enterProperCredentials()
+        enterCredentials()
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isNotDisplayed()
         onId(R.id.loginProgressBar).isNotDisplayed()
+    }
+
+    @Test
+    fun shouldNotShowProgressWhenLoginError() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        enterCredentials()
+        onId(R.id.loginButton).click()
+        onId(R.id.loginError).isDisplayed()
+        onId(R.id.loginProgressBar).isNotDisplayed()
+    }
+
+    @Test
+    fun shouldNotClickLoginButtonWhenProgressIsVisible() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        enterCredentials()
+        onId(R.id.loginButton).click()
+        onId(R.id.loginButton).isDisabled()
     }
 }

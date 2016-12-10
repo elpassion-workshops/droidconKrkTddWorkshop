@@ -124,14 +124,14 @@ class LoginControllerTest {
     fun shouldObserveOnPassedScheduler() {
         whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
         val scheduler = TestScheduler()
-        val controller = LoginController(api, view, userStorage, scheduler, scheduler)
+        val controller = LoginController(api, view, userStorage, scheduler, Schedulers.immediate())
         controller.onLogin("dgf", "dshfgas")
         verify(userStorage, never()).saveUserData(User("user_1"))
         scheduler.triggerActions()
         verify(userStorage, times(1)).saveUserData(User("user_1"))
     }
 
-    @Test
+    @Test§
     fun shouldSubscribeOnPassedScheduler() {
         whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
         val scheduler = TestScheduler()
@@ -146,6 +146,3 @@ class LoginControllerTest {
         controller.onLogin(email, password)
     }
 }
-
-
-

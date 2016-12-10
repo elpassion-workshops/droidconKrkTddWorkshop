@@ -24,8 +24,14 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldNotCallApiWhenEmailIsInvalid() {
+    fun shouldNotCallApiWhenEmailDoesNotContainAt() {
         doLogin(email = "emailtest.pl")
+        verifyLoginNotCalled()
+    }
+
+    @Test
+    fun shouldNotCallApiWhenEmailContainsAtOnly() {
+        doLogin(email = "@")
         verifyLoginNotCalled()
     }
 
@@ -45,6 +51,9 @@ class LoginControllerTest {
 }
 
 class LoginController(private val api: Login.Api) {
+
+    private val EMAIL_PATTERN = ".+@.+".toRegex()
+
     fun onLogin(email: String, password: String) {
         if (password.isEmpty()) {
             return
@@ -52,7 +61,7 @@ class LoginController(private val api: Login.Api) {
         if (email.isEmpty()) {
             return
         }
-        if (!email.contains("@")) {
+        if (!email.matches(EMAIL_PATTERN)) {
             return
         }
         api.login(email, password)

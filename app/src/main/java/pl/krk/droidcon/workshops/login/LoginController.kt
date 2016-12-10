@@ -1,9 +1,14 @@
 package pl.krk.droidcon.workshops.login
 
+import rx.Subscription
+import rx.subscriptions.CompositeSubscription
+
 class LoginController(private val api: Login.Api, private val view: Login.View) {
 
     private fun credentialsAreValid(email: String, password: String): Boolean =
             (password.length >= 3) and email.isNotEmpty() and password.isNotEmpty()
+
+    private val compositeSubscription = CompositeSubscription()
 
     fun onLogin(email: String, password: String) {
         if (credentialsAreValid(email, password)) {
@@ -13,16 +18,25 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
                         view.hideError()
                         view.showLoadProgress()
                     }
+                    .doOnUnsubscribe { view.hideLoadProgress() }
                     .subscribe(
-                            { unit ->  },
+                            { unit -> },
                             { throwable ->
-                                view.hideLoadProgress()
                                 view.showError("API login failed")
-                            },
-                            { view.hideLoadProgress() }
+                            }
                     )
+                    .save()
         } else {
             view.showError("Invalid login or password!")
         }
     }
+
+    fun onDestroy() {
+        compositeSubscription.clear()
+    }
+
+    private fun Subscription.save() {
+        compositeSubscription.add(this)
+    }
 }
+

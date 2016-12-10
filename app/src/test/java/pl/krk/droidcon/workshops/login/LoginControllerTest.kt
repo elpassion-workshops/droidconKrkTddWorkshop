@@ -88,4 +88,11 @@ class LoginControllerTest {
         verify(view).hideLoadProgress()
     }
 
+    @Test
+    fun shouldHideLoaderOnDestroy() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        login()
+        controller.onDestroy()
+        verify(view).hideLoadProgress()
+    }
 }

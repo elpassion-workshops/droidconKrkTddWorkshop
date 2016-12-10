@@ -13,6 +13,7 @@ interface Login {
         fun showLoader()
         fun hideLoader()
         fun disableLoginButton()
+        fun enableLoginButton()
     }
 
     interface UserStorage {

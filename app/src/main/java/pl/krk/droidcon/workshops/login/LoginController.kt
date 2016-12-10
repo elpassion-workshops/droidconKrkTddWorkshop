@@ -39,5 +39,8 @@ class LoginController(private val api: Login.Api,
                 view.showLoader()
                 view.disableLoginButton()
             }
-            .doOnUnsubscribe { view.hideLoader() }
+            .doOnUnsubscribe {
+                view.hideLoader()
+                view.enableLoginButton()
+            }
 }

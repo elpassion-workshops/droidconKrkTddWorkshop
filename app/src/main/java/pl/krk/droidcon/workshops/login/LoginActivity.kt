@@ -8,6 +8,7 @@ import pl.krk.droidcon.workshops.R
 import rx.schedulers.Schedulers
 
 class LoginActivity : AppCompatActivity(), Login.View {
+
     private val loginController by lazy {
         LoginController(LoginApiProvider.get(), this, object : Login.UserStorage {
             override fun saveUserData(user: User) {
@@ -33,6 +34,10 @@ class LoginActivity : AppCompatActivity(), Login.View {
 
     override fun disableLoginButton() {
         loginButton.isEnabled = false
+    }
+
+    override fun enableLoginButton() {
+        loginButton.isEnabled = true
     }
 
     override fun showLoader() {

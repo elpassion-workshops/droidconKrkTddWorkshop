@@ -136,4 +136,12 @@ class LoginActivityTest {
         onId(R.id.loginButton).click()
         onId(R.id.loginButton).isDisabled()
     }
+
+    @Test
+    fun shouldEnableLoginButtonWhenLoginFails() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        enterCredentials()
+        onId(R.id.loginButton).click()
+        onId(R.id.loginButton).isEnabled()
+    }
 }

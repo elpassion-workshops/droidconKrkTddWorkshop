@@ -29,4 +29,12 @@ class LoginActivityTest {
     fun shouldPasswordHintBeVisible() {
         onText(R.string.loginPasswordHeader).isDisplayed()
     }
+
+    @Test
+    fun shouldHaveTypedPasswordInTheInput() {
+        onId(R.id.loginPasswordInput)
+                .isDisplayed()
+                .typeText("abcdef19")
+                .hasText("abcdef19")
+    }
 }

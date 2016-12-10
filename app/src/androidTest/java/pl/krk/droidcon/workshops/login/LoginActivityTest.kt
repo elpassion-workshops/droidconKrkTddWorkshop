@@ -76,14 +76,18 @@ class LoginActivityTest {
     @Test
     fun shouldNotShowErrorWhenLoginPass() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        enterProperCredentials()
+        onId(R.id.loginButton).click()
+        onId(R.id.loginError).isNotDisplayed()
+    }
+
+    private fun enterProperCredentials() {
         onId(R.id.loginEmailInput)
                 .typeText("email@test.pl")
         Espresso.closeSoftKeyboard()
         onId(R.id.loginPasswordInput)
                 .typeText("password")
         Espresso.closeSoftKeyboard()
-        onId(R.id.loginButton).click()
-        onId(R.id.loginError).isNotDisplayed()
     }
 
     @Test

@@ -16,7 +16,7 @@ class LoginController(private val api: Login.Api,
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             subscription = api.login(email, password)
-                    .handleLoader(view)
+                    .handleUiChangeWhileLogging(view)
                     .subscribeOn(subscribeOnScheduler)
                     .observeOn(observeOnScheduler)
                     .doOnNext { userStorage.saveUserData(it) }
@@ -34,7 +34,7 @@ class LoginController(private val api: Login.Api,
         subscription?.unsubscribe()
     }
 
-    private fun <T> Observable<T>.handleLoader(view: Login.View) = this
+    private fun <T> Observable<T>.handleUiChangeWhileLogging(view: Login.View) = this
             .doOnSubscribe {
                 view.showLoader()
                 view.disableLoginButton()

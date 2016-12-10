@@ -28,11 +28,18 @@ class LoginControllerTest {
         controller.onLogin(email = "")
         verify(api, never()).login(any())
     }
+
+
+    @Test
+    fun shouldNotCallApiWhenEmailDoesntHaveAtChar() {
+        controller.onLogin("emailtest.pl")
+        verify(api, never()).login(any())
+    }
 }
 
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String) {
-        if (email.isNotEmpty()) {
+        if (email.isNotEmpty() && email.contains("@")) {
             api.login(email)
         }
     }

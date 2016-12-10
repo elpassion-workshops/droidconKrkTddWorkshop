@@ -1,8 +1,5 @@
 package pl.krk.droidcon.workshops.login
 
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.assertion.ViewAssertions
-import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.rule.ActivityTestRule
 import com.elpassion.android.commons.espresso.*
 import org.junit.Rule

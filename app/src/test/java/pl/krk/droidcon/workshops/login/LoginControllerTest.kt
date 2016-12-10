@@ -2,7 +2,6 @@ package pl.krk.droidcon.workshops.login
 
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
-import org.mockito.InOrder
 import rx.Observable
 
 class LoginControllerTest {
@@ -80,6 +79,13 @@ class LoginControllerTest {
     @Test
     fun shouldHideLoaderWhenLoginCompleted() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        doLogin()
+        verify(view).hideLoader()
+    }
+
+    @Test
+    fun shouldHideLoaderWhenLoginFails() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
         doLogin()
         verify(view).hideLoader()
     }

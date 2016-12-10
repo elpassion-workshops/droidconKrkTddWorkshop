@@ -16,6 +16,7 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
                 },
                 {
                     view.showError()
+                    view.hideLoader()
                 })
     }
 

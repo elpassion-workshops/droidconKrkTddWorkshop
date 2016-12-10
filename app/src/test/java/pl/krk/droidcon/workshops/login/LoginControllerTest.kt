@@ -85,6 +85,21 @@ class LoginControllerTest {
         verify(view).showLoginFailed()
     }
 
+    @Test
+    fun shouldNotShowLoginFailedOnApiCAllSuccess() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        login()
+        verify(view, never()).showLoginFailed()
+    }
+
+    @Test
+    fun shouldShowLoaderOnLoginCall() {
+        login()
+        verify(view).showLoader()
+    }
+
+
+
     private fun login(email: String = "asd@test.pl", password: String = "password") {
         controller.onLogin(email = email, password = password)
     }
@@ -95,10 +110,10 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             if (email.matches(EMAIL_REGEX)) {
+                view.showLoader()
                 api.login(email, password).subscribe({
                     view.openNextScreen()
-                }, {})
-                view.showLoginFailed()
+                }, {view.showLoginFailed()})
             }
         }
         else {
@@ -120,5 +135,6 @@ interface Login {
         fun showEmptyCredentialsError()
         fun openNextScreen()
         fun showLoginFailed()
+        fun showLoader()
     }
 }

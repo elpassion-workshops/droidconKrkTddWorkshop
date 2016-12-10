@@ -39,10 +39,12 @@ class LoginControllerTest {
 
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String) {
-        if (email.isNotEmpty() && email.contains("@")) {
+        if (isEmailValid(email)) {
             api.login(email)
         }
     }
+
+    private fun isEmailValid(email: String) = email.isNotEmpty() && email.contains("@")
 }
 
 interface Login {

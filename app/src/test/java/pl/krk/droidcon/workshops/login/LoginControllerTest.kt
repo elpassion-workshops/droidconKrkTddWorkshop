@@ -5,6 +5,7 @@ import org.junit.Before
 import org.junit.Test
 
 import rx.Observable
+import rx.Subscription
 
 class LoginControllerTest {
 
@@ -129,15 +130,26 @@ class LoginControllerTest {
         verify(view).hideProgressLoader()
     }
 
+    @Test
+    fun shouldNotHideProgressLoaderWhenCallIsFinished() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        login()
+        controller.onDestroy()
+        verify(view, times(1)).hideProgressLoader()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
 }
 
 class LoginController(private val api: Login.Api, private val view: View) {
+
+    var loginSubscripiton : Subscription? = null
+
     fun onLogin(email: String, password: String) {
         if (isEmailValid(email) && password.isNotEmpty()) {
-            api.login(email, password).doOnSubscribe {
+            loginSubscripiton = api.login(email, password).doOnSubscribe {
                 view.showProgressLoader()
                 view.hideErrorMessage()
             }.doOnUnsubscribe {
@@ -155,7 +167,7 @@ class LoginController(private val api: Login.Api, private val view: View) {
     }
 
     fun onDestroy() {
-        view.hideProgressLoader()
+        loginSubscripiton?.unsubscribe()
     }
 }
 

@@ -1,6 +1,8 @@
 package pl.krk.droidcon.workshops.login
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
 
@@ -20,11 +22,19 @@ class LoginControllerTest {
         controller.onLogin("email2@test.pl")
         verify(api).login("email2@test.pl")
     }
+
+    @Test
+    fun shouldNotCallApiWhenEmailIsEmpty() {
+        controller.onLogin(email = "")
+        verify(api, never()).login(any())
+    }
 }
 
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String) {
-        api.login(email)
+        if (email.isNotEmpty()) {
+            api.login(email)
+        }
     }
 }
 

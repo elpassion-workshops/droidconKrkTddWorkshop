@@ -1,5 +1,6 @@
 package pl.krk.droidcon.workshops.login
 
+import android.support.test.espresso.Espresso
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.withInputType
 import android.support.test.rule.ActivityTestRule
@@ -75,8 +76,27 @@ class LoginActivityTest {
     @Test
     fun shouldNotShowErrorWhenLoginPass() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        onId(R.id.loginEmailInput)
+                .typeText("email@test.pl")
+        Espresso.closeSoftKeyboard()
+        onId(R.id.loginPasswordInput)
+                .typeText("password")
+        Espresso.closeSoftKeyboard()
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isNotDisplayed()
+    }
+
+    @Test
+    fun shouldErrorHaveText() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        onId(R.id.loginError).hasText(R.string.loginErrorText)
+    }
+
+    @Test
+    fun shouldErrorDisplayLackOfEmailMessage() {
+        onId(R.id.loginButton).click()
+        onId(R.id.loginError).hasText(R.string.loginCredentialEmptyError)
+
     }
 
     @Test

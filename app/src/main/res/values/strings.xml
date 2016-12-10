@@ -4,4 +4,5 @@
     <string name="loginEmailHeader">Email</string>
     <string name="loginPasswordHeader">Password</string>
     <string name="loginCredentialEmptyError">Please fill credentials</string>
+    <string name="loginErrorText">Couldn\'t log in</string>
 </resources>

@@ -8,7 +8,6 @@ import pl.krk.droidcon.workshops.R
 import rx.schedulers.Schedulers
 
 class LoginActivity : AppCompatActivity(), Login.View {
-
     private val loginController by lazy {
         LoginController(LoginApiProvider.get(), this, object : Login.UserStorage {
             override fun saveUserData(user: User) {
@@ -20,11 +19,12 @@ class LoginActivity : AppCompatActivity(), Login.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
         loginButton.setOnClickListener {
-            loginController.onLogin("email@test.pl", "password")
+            loginController.onLogin(loginEmailInput.text.toString(), loginPasswordInput.text.toString())
         }
     }
 
-    override fun showError() {
+    override fun showError(errorStringResource: Int) {
+        loginError.setText(errorStringResource)
         loginError.visibility = View.VISIBLE
     }
 

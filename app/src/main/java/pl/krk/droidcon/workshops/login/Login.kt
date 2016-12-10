@@ -8,7 +8,7 @@ interface Login {
     }
 
     interface View {
-        fun showError()
+        fun showError(errorStringResource: Int)
         fun gotoHomeScreen()
         fun showLoader()
         fun hideLoader()

@@ -1,5 +1,6 @@
 package pl.krk.droidcon.workshops.login
 
+import pl.krk.droidcon.workshops.R
 import rx.Observable
 import rx.Scheduler
 import rx.Subscription
@@ -22,8 +23,10 @@ class LoginController(private val api: Login.Api,
                     .subscribe({
                         view.gotoHomeScreen()
                     }, {
-                        view.showError()
+                        view.showError(R.string.loginErrorText)
                     })
+        } else {
+            view.showError(R.string.loginCredentialEmptyError)
         }
     }
 

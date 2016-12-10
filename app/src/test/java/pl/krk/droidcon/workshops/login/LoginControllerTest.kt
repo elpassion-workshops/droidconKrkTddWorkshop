@@ -12,11 +12,18 @@ class LoginControllerTest {
         LoginController(api).onLogin("email@test.pl")
         verify(api).login("email@test.pl")
     }
+
+    @Test
+    fun shouldReallyCallApiWithProvidedEmail() {
+        val api = mock<Login.Api>()
+        LoginController(api).onLogin("email2@test.pl")
+        verify(api).login("email2@test.pl")
+    }
 }
 
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String) {
-        api.login("email@test.pl")
+        api.login(email)
     }
 }
 

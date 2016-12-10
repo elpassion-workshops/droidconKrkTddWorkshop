@@ -26,17 +26,18 @@ class LoginActivityTest {
     
     @Test
     fun shouldHaveTypedEmailInTheInput() {
-        onId(R.id.loginEmailInput)
-                .isDisplayed()
-                .typeText("email@test.pl")
-                .hasText("email@test.pl")
+        checkTypedTextIsDisplayedInInput("email@test.pl", R.id.loginEmailInput)
     }
 
     @Test
     fun shouldHaveTypedPasswordInTheInput() {
-        onId(R.id.loginPasswordInput)
+        checkTypedTextIsDisplayedInInput("secret", R.id.loginPasswordInput)
+    }
+
+    private fun checkTypedTextIsDisplayedInInput(text: String, viewId: Int) {
+        onId(viewId)
                 .isDisplayed()
-                .typeText("secret")
-                .hasText("secret")
+                .typeText(text)
+                .hasText(text)
     }
 }

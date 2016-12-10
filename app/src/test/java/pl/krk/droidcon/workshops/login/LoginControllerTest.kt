@@ -2,6 +2,7 @@ package pl.krk.droidcon.workshops.login
 
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
+import org.mockito.InOrder
 import rx.Observable
 
 class LoginControllerTest {
@@ -81,6 +82,13 @@ class LoginControllerTest {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
         doLogin()
         verify(view).hideLoader()
+    }
+
+    @Test
+    fun shouldNotHideLoaderUntilLoginCompleted() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        doLogin()
+        verify(view, never()).hideLoader()
     }
 
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {

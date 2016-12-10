@@ -62,13 +62,26 @@ class LoginControllerTest {
         controller.onLogin("email@test.pl", "some-password")
         verify(view).gotoHomeScreen()
     }
+
+    @Test
+    fun shouldShowLoaderAfterClickingLoginButton() {
+        controller.onLogin("email@test.pl", "some-password")
+        verify(view).showLoader()
+    }
+
+    @Test
+    fun shouldNotShowLoaderWhenEmailIsEmpty() {
+        controller.onLogin("", "some-password")
+        verify(view, never()).showLoader()
+    }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
+            view.showLoader()
             api.login(email, password)
-                    .subscribe({view.gotoHomeScreen()}, { view.showError() })
+                    .subscribe({ view.gotoHomeScreen() }, { view.showError() })
         }
     }
 }
@@ -84,6 +97,14 @@ interface Login {
         }
 
         fun gotoHomeScreen() {
+
+        }
+
+        fun showLoader() {
+
+        }
+
+        fun hideLoader() {
 
         }
 

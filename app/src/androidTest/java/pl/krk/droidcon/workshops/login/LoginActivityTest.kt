@@ -51,4 +51,10 @@ class LoginActivityTest {
         onId(R.id.loginPasswordInput)
                 .check(ViewAssertions.matches(ViewMatchers.withInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)))
     }
+
+    @Test
+    fun shouldLoginButtonBeVisible() {
+        onId(R.id.loginLoginButton)
+                .isDisplayed()
+    }
 }

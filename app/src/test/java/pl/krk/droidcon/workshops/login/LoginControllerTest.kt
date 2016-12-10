@@ -43,6 +43,6 @@ class LoginController(private val api: Login.Api) {
 
 interface Login {
     interface Api {
-        fun login(s: String, password: String)
+        fun login(login: String, password: String)
     }
 }

@@ -13,33 +13,61 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
-        controller.onLogin("email@test.pl")
-        verify(api).login("email@test.pl")
+        login()
+        verify(api).login("email@test.pl", "mypass")
     }
 
     @Test
     fun shouldReallyCallApiWithProvidedEmail() {
-        controller.onLogin("email2@test.pl")
-        verify(api).login("email2@test.pl")
+        login()
+        verify(api).login("email@test.pl", "mypass")
+    }
+
+    private fun login(login: String = "email@test.pl", password: String = "mypass") {
+        controller.onLogin(login, password)
     }
 
     @Test
     fun shouldNotCallApiWhenEmailIsEmpty() {
-        controller.onLogin(email = "")
-        verify(api, never()).login(any())
+        login(login = "")
+        verify(api, never()).login(any(), any())
+    }
+
+    @Test
+    fun shouldCallApiWithProvidedPassword() {
+        login()
+        verify(api).login("email@test.pl", "mypass")
+    }
+
+    @Test
+    fun shouldNotCallLoginWithEmptyPassword() {
+        login(password = "")
+        verify(api, never()).login(any(), any())
+    }
+
+    @Test
+    fun shouldNotCallLoginIfLoginIsCorrectAndPasswordIsEmpty() {
+        login(login = "123", password = "")
+        verify(api, never()).login(any(), any())
+    }
+
+    @Test
+    fun shouldNotCallLoginIfPasswordIsNotHaveValidFormat() {
+        login("name@test.pl", password = "12")
+        verify(api, never()).login(any(), any())
     }
 }
 
 class LoginController(private val api: Login.Api) {
-    fun onLogin(email: String) {
-        if (email.isNotEmpty()) {
-            api.login(email)
+    fun onLogin(email: String, password: String) {
+        if ((password.length >= 3) and email.isNotEmpty() and password.isNotEmpty()) {
+            api.login(email, password)
         }
     }
 }
 
 interface Login {
     interface Api {
-        fun login(s: String)
+        fun login(s: String, password: String)
     }
 }

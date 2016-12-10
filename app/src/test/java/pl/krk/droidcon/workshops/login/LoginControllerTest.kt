@@ -39,60 +39,60 @@ class LoginControllerTest {
 
     @Test
     fun shouldNotCallApiWhenPasswordIsEmpty() {
-        controller.onLogin(email = "email@test.pl", password = "")
+        login(password = "")
         verify(api, never()).login(any(), any())
     }
 
     @Test
     fun shouldShowErrorWhenApiCallFails() {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException("login failed")))
-        controller.onLogin("email@test.pl", "some-password")
+        login()
         verify(view).showError()
     }
 
     @Test
     fun shouldNotShowErrorWhenApiCallSuccess() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
-        controller.onLogin("email@test.pl", "some-password")
+        login()
         verify(view, never()).showError()
     }
 
     @Test
     fun shouldMoveToHomeScreenWhenApiCallSucceed() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
-        controller.onLogin("email@test.pl", "some-password")
+        login()
         verify(view).gotoHomeScreen()
     }
 
     @Test
     fun shouldShowLoaderAfterClickingLoginButton() {
-        controller.onLogin("email@test.pl", "some-password")
+        login()
         verify(view).showLoader()
     }
 
     @Test
     fun shouldNotShowLoaderWhenEmailIsEmpty() {
-        controller.onLogin("", "some-password")
+        login("", "some-password")
         verify(view, never()).showLoader()
     }
 
     @Test
     fun shouldHideLoaderAfterApiCallCompletes() {
         whenever(api.login(any(), any())) doReturn Observable.just(Unit)
-        controller.onLogin("email@email.pl", "some-password")
+        login("email@email.pl", "some-password")
         verify(view).hideLoader()
     }
 
     @Test
     fun shouldNotHideLoaderUntilApiCallCompletes() {
         whenever(api.login(any(), any())) doReturn Observable.never()
-        controller.onLogin("email@email.pl", "some-password")
+        login("email@email.pl", "some-password")
         verify(view, never()).hideLoader()
     }
 
     @Test
     fun shouldHideLoaderWhenControllerCallsOnDestroy() {
-        controller.onLogin("qwerty", "asdfgh")
+        login("qwerty", "asdfgh")
         controller.onDestroy()
         verify(view).hideLoader()
     }
@@ -102,11 +102,15 @@ class LoginControllerTest {
         controller.onDestroy()
         verify(view, never()).hideLoader()
     }
+
+    private fun login(email: String = "email@test.pl", password: String = "some-password") {
+        controller.onLogin(email, password)
+    }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
 
-    private var  subscription: Subscription? = null
+    private var subscription: Subscription? = null
 
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {

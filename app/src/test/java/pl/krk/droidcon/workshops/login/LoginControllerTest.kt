@@ -78,6 +78,15 @@ class LoginControllerTest {
         verify(view).openNextScreen()
     }
 
+    @Test
+    fun shouldDisplayErrorWhenApiCallError() {
+        val wrongEmail = "wrong.email@test.pl"
+        val wrongPass = "wrongPass"
+        whenever(api.login(wrongEmail, wrongPass)).thenReturn(Observable.error(RuntimeException()))
+        login(wrongEmail, wrongPass)
+        verify(view).showErrorMessage()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
@@ -88,6 +97,8 @@ class LoginController(private val api: Login.Api, private val view: View) {
         if (isEmailValid(email) && password.isNotEmpty()) {
             api.login(email, password).subscribe({
                 view.openNextScreen()
+            }, {
+                view.showErrorMessage()
             })
         }
     }
@@ -105,4 +116,5 @@ interface Login {
 
 interface View {
     fun openNextScreen()
+    fun showErrorMessage()
 }

@@ -13,4 +13,8 @@ interface Login {
         fun showLoader()
         fun hideLoader()
     }
+
+    interface UserStorage {
+        fun saveUserData(user: User)
+    }
 }

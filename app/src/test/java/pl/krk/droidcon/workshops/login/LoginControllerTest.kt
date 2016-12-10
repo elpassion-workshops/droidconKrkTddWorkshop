@@ -16,7 +16,7 @@ class LoginControllerTest {
     val view = mock<Login.View>()
     private val userStorage = mock<UserStorage>()
 
-    private val controller = LoginController(api, view, userStorage, Schedulers.immediate())
+    private val controller = LoginController(api, view, userStorage, Schedulers.immediate(), Schedulers.immediate())
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -125,9 +125,23 @@ class LoginControllerTest {
     @Test
     fun shouldObserveOnPassedScheduler() {
         whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
-        val controller = LoginController(api, view, userStorage, TestScheduler())
+        val scheduler = TestScheduler()
+        val controller = LoginController(api, view, userStorage, scheduler, scheduler)
         controller.onLogin("dgf", "dshfgas")
         verify(userStorage, never()).saveUserData(User("user_1"))
+        scheduler.triggerActions()
+        verify(userStorage, times(1)).saveUserData(User("user_1"))
+    }
+
+    @Test
+    fun shouldSubscribeOnPassedScheduler() {
+        whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
+        val scheduler = TestScheduler()
+        val controller = LoginController(api, view, userStorage, Schedulers.immediate(), scheduler)
+        controller.onLogin("dgf", "dshfgas")
+        verify(view, never()).gotoHomeScreen()
+        scheduler.triggerActions()
+        verify(view, times(1)).gotoHomeScreen()
     }
 
     private fun login(email: String = "email@test.pl", password: String = "some-password") {
@@ -141,7 +155,8 @@ interface UserStorage {
 
 data class User(val id: String)
 
-class LoginController(private val api: Login.Api, val view: Login.View, val userStorage: UserStorage, val scheduler: Scheduler) {
+class LoginController(private val api: Login.Api, val view: Login.View, val userStorage: UserStorage, val scheduler: Scheduler,
+                      val subscribeOnScheduler: Scheduler) {
 
     private var subscription: Subscription? = null
 
@@ -149,6 +164,7 @@ class LoginController(private val api: Login.Api, val view: Login.View, val user
         if (email.isNotEmpty() && password.isNotEmpty()) {
             subscription = api.login(email, password)
                     .handleLoader(view)
+                    .subscribeOn(subscribeOnScheduler)
                     .observeOn(scheduler)
                     .subscribe({
                         userStorage.saveUserData(it)

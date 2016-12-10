@@ -3,8 +3,6 @@ package pl.krk.droidcon.workshops.login
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import rx.Observable
-import rx.Scheduler
-import rx.Subscription
 import rx.schedulers.Schedulers
 import rx.schedulers.TestScheduler
 
@@ -149,51 +147,5 @@ class LoginControllerTest {
     }
 }
 
-interface UserStorage {
-    fun saveUserData(user: User)
-}
 
-data class User(val id: String)
 
-class LoginController(private val api: Login.Api, val view: Login.View, val userStorage: UserStorage, val scheduler: Scheduler,
-                      val subscribeOnScheduler: Scheduler) {
-
-    private var subscription: Subscription? = null
-
-    fun onLogin(email: String, password: String) {
-        if (email.isNotEmpty() && password.isNotEmpty()) {
-            subscription = api.login(email, password)
-                    .handleLoader(view)
-                    .subscribeOn(subscribeOnScheduler)
-                    .observeOn(scheduler)
-                    .subscribe({
-                        userStorage.saveUserData(it)
-                        view.gotoHomeScreen()
-                    }, {
-                        view.showError()
-                    })
-        }
-    }
-
-    fun onDestroy() {
-        subscription?.unsubscribe()
-    }
-
-}
-
-private fun <T> Observable<T>.handleLoader(view: Login.View) =
-        doOnSubscribe { view.showLoader() }
-                .doOnUnsubscribe { view.hideLoader() }
-
-interface Login {
-    interface Api {
-        fun login(login: String, password: String): Observable<User>
-    }
-
-    interface View {
-        fun showError()
-        fun gotoHomeScreen()
-        fun showLoader()
-        fun hideLoader()
-    }
-}

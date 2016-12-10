@@ -22,6 +22,10 @@ class LoginActivityTest {
     @JvmField
     val rule = ActivityTestRule(LoginActivity::class.java, false, false)
 
+    @Rule
+    @JvmField
+    val intentsRule = InitIntentsRule()
+
     @Before
     fun setUp() {
         LoginApiProvider.override = api
@@ -77,6 +81,13 @@ class LoginActivityTest {
     fun shouldNotShowErrorWhenLoginPass() {
         whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
         onId(R.id.loginButton).click()
-        onId(R.id.loginError).isNotDisplayed()
+        onId(R.id.loginError).doesNotExist()
+    }
+
+    @Test
+    fun shouldGoHomeWhenLoginSuccess() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        onId(R.id.loginButton).click()
+        checkIntent(HomeActivity::class.java)
     }
 }

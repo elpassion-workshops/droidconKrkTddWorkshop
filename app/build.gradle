@@ -62,4 +62,6 @@ dependencies {
     androidTestCompile "com.crittercism.dexmaker:dexmaker:$dexMakerVersion"
     androidTestCompile "com.crittercism.dexmaker:dexmaker-dx:$dexMakerVersion"
     androidTestCompile "com.crittercism.dexmaker:dexmaker-mockito:$dexMakerVersion"
+
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
 }

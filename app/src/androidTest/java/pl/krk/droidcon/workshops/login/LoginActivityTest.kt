@@ -31,4 +31,12 @@ class LoginActivityTest {
                 .typeText("email@test.pl")
                 .hasText("email@test.pl")
     }
+
+    @Test
+    fun shouldHaveTypedPasswordInTheInput() {
+        onId(R.id.loginPasswordInput)
+            .isDisplayed()
+            .typeText("password")
+            .hasText("password")
+    }
 }

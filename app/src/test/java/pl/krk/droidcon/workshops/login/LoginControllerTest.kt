@@ -133,21 +133,9 @@ interface Login {
     }
 
     interface View {
-        fun showError() {
-
-        }
-
-        fun gotoHomeScreen() {
-
-        }
-
-        fun showLoader() {
-
-        }
-
-        fun hideLoader() {
-
-        }
-
+        fun showError()
+        fun gotoHomeScreen()
+        fun showLoader()
+        fun hideLoader()
     }
 }

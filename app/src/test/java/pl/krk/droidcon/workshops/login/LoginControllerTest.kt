@@ -5,9 +5,13 @@ import org.junit.Test
 
 class LoginControllerTest {
 
+    private val ERR_CANNOT_LOGIN = "Cannot login"
+    private val ERR_WRONG_EMAIL = "Wrong email"
+
     private val api = mock<Login.Api>()
     private val view = mock<Login.View>()
-    private val controller = LoginController(api, view)
+    private val emailChecker = mock<Login.EmailChecker>()
+    private val controller = LoginController(api, view, emailChecker)
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -46,12 +50,12 @@ class LoginControllerTest {
     }
 
     @Test
-    fun shouldShowErrorMessageWhenApiFailed() {
+    fun shouldShowLoginErrorMessageWhenLoginFailed() {
         whenever(api.login(any(), any())).thenReturn(false)
 
         controller.onLogin("any login", "any password")
 
-        verify(view).displayErrorMessage()
+        verify(view).displayErrorMessage(ERR_CANNOT_LOGIN)
     }
 
     @Test
@@ -91,14 +95,33 @@ class LoginControllerTest {
         inOrder.verify(view).displayProgressBar()
         inOrder.verify(api).login(any(), any())
         inOrder.verify(view).hideProgressBar()
-
     }
+
+    @Test
+    fun shouldShowErrorMessageWhenEmailIsInvalid() {
+        whenever(emailChecker.verifyEmail("email@com")).thenReturn(false)
+
+        controller.onLogin("email@com", "password")
+
+        verify(view).displayErrorMessage(ERR_WRONG_EMAIL)
+    }
+
 }
 
-class LoginController(private val api: Login.Api, private val view: Login.View) {
+class LoginController(private val api: Login.Api,
+                      private val view: Login.View,
+                      private val emailChecker: Login.EmailChecker) {
+
+    private val ERR_CANNOT_LOGIN = "Cannot login"
+    private val ERR_WRONG_EMAIL = "Wrong email"
+
     fun onLogin(email: String, password: String) {
         if (password.isEmpty() || email.isEmpty()) {
             return
+        }
+
+        if (!emailChecker.verifyEmail(email)) {
+            view.displayErrorMessage(ERR_WRONG_EMAIL)
         }
 
         view.displayProgressBar()
@@ -107,7 +130,7 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
         if (loginResult) {
             view.goToAnotherScreen()
         } else {
-            view.displayErrorMessage()
+            view.displayErrorMessage(ERR_CANNOT_LOGIN)
         }
     }
 }
@@ -118,10 +141,14 @@ interface Login {
     }
 
     interface View {
-        fun displayErrorMessage()
+        fun displayErrorMessage(message: String)
         fun goToAnotherScreen()
 
         fun displayProgressBar()
         fun hideProgressBar()
+    }
+
+    interface EmailChecker {
+        fun verifyEmail(email: String): Boolean
     }
 }

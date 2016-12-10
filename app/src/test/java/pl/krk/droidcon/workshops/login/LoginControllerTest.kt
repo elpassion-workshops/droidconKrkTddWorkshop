@@ -3,7 +3,10 @@ package pl.krk.droidcon.workshops.login
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import rx.Observable
+import rx.Scheduler
 import rx.Subscription
+import rx.schedulers.Schedulers
+import rx.schedulers.TestScheduler
 
 class LoginControllerTest {
 
@@ -13,7 +16,7 @@ class LoginControllerTest {
     val view = mock<Login.View>()
     private val userStorage = mock<UserStorage>()
 
-    private val controller = LoginController(api, view, userStorage)
+    private val controller = LoginController(api, view, userStorage, Schedulers.immediate())
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -119,6 +122,14 @@ class LoginControllerTest {
         verify(userStorage).saveUserData(User("user_1"))
     }
 
+    @Test
+    fun shouldObserveOnPassedScheduler() {
+        whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
+        val controller = LoginController(api, view, userStorage, TestScheduler())
+        controller.onLogin("dgf", "dshfgas")
+        verify(userStorage, never()).saveUserData(User("user_1"))
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "some-password") {
         controller.onLogin(email, password)
     }
@@ -130,7 +141,7 @@ interface UserStorage {
 
 data class User(val id: String)
 
-class LoginController(private val api: Login.Api, val view: Login.View, val userStorage: UserStorage) {
+class LoginController(private val api: Login.Api, val view: Login.View, val userStorage: UserStorage, val scheduler: Scheduler) {
 
     private var subscription: Subscription? = null
 
@@ -138,6 +149,7 @@ class LoginController(private val api: Login.Api, val view: Login.View, val user
         if (email.isNotEmpty() && password.isNotEmpty()) {
             subscription = api.login(email, password)
                     .handleLoader(view)
+                    .observeOn(scheduler)
                     .subscribe({
                         userStorage.saveUserData(it)
                         view.gotoHomeScreen()

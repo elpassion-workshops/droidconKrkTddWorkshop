@@ -49,4 +49,9 @@ class LoginActivityTest {
                 .typeText("abcdef19")
                 .check(matches(withInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)))
     }
+
+    @Test
+    fun shouldLoginButtonBeEnabled() {
+        onId(R.id.loginButton).isEnabled()
+    }
 }

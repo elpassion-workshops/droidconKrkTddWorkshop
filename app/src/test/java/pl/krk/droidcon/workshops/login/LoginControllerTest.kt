@@ -54,14 +54,14 @@ class LoginControllerTest {
 
     @Test
     fun shouldNotShowErrorWhenApiCallSuccess() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("")))
         login()
         verify(view, never()).showError()
     }
 
     @Test
     fun shouldMoveToHomeScreenWhenApiCallSucceed() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("")))
         login()
         verify(view).gotoHomeScreen()
     }
@@ -80,7 +80,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldHideLoaderAfterApiCallCompletes() {
-        whenever(api.login(any(), any())) doReturn Observable.just(Unit)
+        whenever(api.login(any(), any())) doReturn Observable.just(User(""))
         login("email@email.pl", "some-password")
         verify(view).hideLoader()
     }
@@ -107,9 +107,16 @@ class LoginControllerTest {
 
     @Test
     fun shouldSaveUserDataWhenApiCallSucceeded() {
-        whenever(api.login(any(), any())) doReturn Observable.just(Unit)
+        whenever(api.login(any(), any())) doReturn Observable.just(User(""))
         login()
-        verify(userStorage).saveUserData()
+        verify(userStorage).saveUserData(User(""))
+    }
+
+    @Test
+    fun shouldReallySaveUserDataWhenApiCallSucceeds() {
+        whenever(api.login(any(), any())) doReturn Observable.just(User("user_1"))
+        login()
+        verify(userStorage).saveUserData(User("user_1"))
     }
 
     private fun login(email: String = "email@test.pl", password: String = "some-password") {
@@ -118,19 +125,21 @@ class LoginControllerTest {
 }
 
 interface UserStorage {
-    fun saveUserData()
+    fun saveUserData(user: User)
 }
+
+data class User(val id: String)
 
 class LoginController(private val api: Login.Api, val view: Login.View, val userStorage: UserStorage) {
 
     private var subscription: Subscription? = null
 
     fun onLogin(email: String, password: String) {
-        userStorage.saveUserData()
         if (email.isNotEmpty() && password.isNotEmpty()) {
             subscription = api.login(email, password)
                     .handleLoader(view)
                     .subscribe({
+                        userStorage.saveUserData(it)
                         view.gotoHomeScreen()
                     }, {
                         view.showError()
@@ -150,7 +159,7 @@ private fun <T> Observable<T>.handleLoader(view: Login.View) =
 
 interface Login {
     interface Api {
-        fun login(login: String, password: String): Observable<Unit>
+        fun login(login: String, password: String): Observable<User>
     }
 
     interface View {

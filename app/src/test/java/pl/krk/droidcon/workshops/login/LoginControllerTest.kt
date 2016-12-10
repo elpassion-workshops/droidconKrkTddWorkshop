@@ -74,10 +74,17 @@ class LoginControllerTest {
         controller.onLogin("", "some-password")
         verify(view, never()).showLoader()
     }
+
+    @Test
+    fun shouldHideLoaderAfterApiCallCompletes() {
+        controller.onLogin("email@email.pl", "some-password")
+        verify(view).hideLoader()
+    }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
     fun onLogin(email: String, password: String) {
+        view.hideLoader()
         if (email.isNotEmpty() && password.isNotEmpty()) {
             view.showLoader()
             api.login(email, password)

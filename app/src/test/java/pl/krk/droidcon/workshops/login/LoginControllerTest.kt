@@ -1,12 +1,21 @@
 package pl.krk.droidcon.workshops.login
 
 import com.nhaarman.mockito_kotlin.*
+import org.junit.Before
 import org.junit.Test
+
+import rx.Observable
 
 class LoginControllerTest {
 
     private val api = mock<Login.Api>()
-    private val controller = LoginController(api)
+    private val view = mock<View>()
+    private val controller = LoginController(api, view)
+
+    @Before
+    fun setup() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+    }
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -62,15 +71,24 @@ class LoginControllerTest {
         verify(api, never()).login(any(), any())
     }
 
+    @Test
+    fun shouldOpenNextScreenOnApiCallSuccess() {
+        whenever(api.login("email@test.pl", "passw")).thenReturn(Observable.just(Unit))
+        login("email@test.pl", "passw")
+        verify(view).openNextScreen()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
 }
 
-class LoginController(private val api: Login.Api) {
+class LoginController(private val api: Login.Api, private val view: View) {
     fun onLogin(email: String, password: String) {
         if (isEmailValid(email) && password.isNotEmpty()) {
-            api.login(email, password)
+            api.login(email, password).subscribe({
+                view.openNextScreen()
+            })
         }
     }
 
@@ -81,6 +99,10 @@ class LoginController(private val api: Login.Api) {
 
 interface Login {
     interface Api {
-        fun login(s: String, password: String)
+        fun login(s: String, password: String) : Observable<Unit>
     }
+}
+
+interface View {
+    fun openNextScreen()
 }

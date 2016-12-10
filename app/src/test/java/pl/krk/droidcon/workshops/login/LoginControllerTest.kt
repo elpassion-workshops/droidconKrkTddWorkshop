@@ -88,6 +88,12 @@ class LoginControllerTest {
         controller.onLogin("email@email.pl", "some-password")
         verify(view, never()).hideLoader()
     }
+
+    @Test
+    fun shouldHideLoaderWhenControllerCallsOnDestroy() {
+        controller.onDestroy()
+        verify(view).hideLoader()
+    }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
@@ -97,6 +103,10 @@ class LoginController(private val api: Login.Api, val view: Login.View) {
             api.login(email, password)
                     .subscribe({ view.gotoHomeScreen() }, { view.showError() }, { view.hideLoader() })
         }
+    }
+
+    fun onDestroy() {
+        view.hideLoader()
     }
 }
 

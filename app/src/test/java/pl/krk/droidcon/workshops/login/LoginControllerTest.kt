@@ -11,7 +11,9 @@ class LoginControllerTest {
         on { login(any(), any()) } doReturn Observable.never()
     }
     val view = mock<Login.View>()
-    private val controller = LoginController(api, view)
+    private val userStorage = mock<UserStorage>()
+
+    private val controller = LoginController(api, view, userStorage)
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
@@ -103,16 +105,28 @@ class LoginControllerTest {
         verify(view, never()).hideLoader()
     }
 
+    @Test
+    fun shouldSaveUserDataWhenApiCallSucceeded() {
+        whenever(api.login(any(), any())) doReturn Observable.just(Unit)
+        login()
+        verify(userStorage).saveUserData()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "some-password") {
         controller.onLogin(email, password)
     }
 }
 
-class LoginController(private val api: Login.Api, val view: Login.View) {
+interface UserStorage {
+    fun saveUserData()
+}
+
+class LoginController(private val api: Login.Api, val view: Login.View, val userStorage: UserStorage) {
 
     private var subscription: Subscription? = null
 
     fun onLogin(email: String, password: String) {
+        userStorage.saveUserData()
         if (email.isNotEmpty() && password.isNotEmpty()) {
             subscription = api.login(email, password)
                     .handleLoader(view)
@@ -127,6 +141,7 @@ class LoginController(private val api: Login.Api, val view: Login.View) {
     fun onDestroy() {
         subscription?.unsubscribe()
     }
+
 }
 
 private fun <T> Observable<T>.handleLoader(view: Login.View) =

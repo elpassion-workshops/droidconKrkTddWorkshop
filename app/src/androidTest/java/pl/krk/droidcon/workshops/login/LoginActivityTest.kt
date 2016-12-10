@@ -31,7 +31,7 @@ class LoginActivityTest {
     fun shouldEmailHintBeVisible() {
         onText(R.string.loginEmailHeader).isDisplayed()
     }
-    
+
     @Test
     fun shouldHaveTypedEmailInTheInput() {
         onId(R.id.loginEmailInput)
@@ -78,5 +78,11 @@ class LoginActivityTest {
     @Test
     fun shouldErrorInvisibleBeforeLoginButtonClickedFirstTime() {
         onId(R.id.errorText).isNotDisplayed()
+    }
+
+    @Test
+    fun shouldShowLoginErrorWhenInvalidEmailAndLoginButtonClicked() {
+        onId(R.id.errorText)
+                .hasText(R.string.emailErrorText)
     }
 }

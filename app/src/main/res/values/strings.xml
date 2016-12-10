@@ -4,4 +4,5 @@
     <string name="loginEmailHeader">Email</string>
     <string name="loginPasswordHeader">Password</string>
     <string name="loginErrorText">Error while logging in</string>
+    <string name="emailErrorText">Invalid email</string>
 </resources>

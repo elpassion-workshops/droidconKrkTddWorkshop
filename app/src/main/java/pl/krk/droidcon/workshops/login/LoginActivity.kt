@@ -30,6 +30,11 @@ class LoginActivity : AppCompatActivity(), Login.View {
         errorText.visibility = View.VISIBLE
     }
 
+    override fun showError(errorMessageResId: Int) {
+        errorText.text = resources.getString(errorMessageResId)
+        errorText.visibility = View.VISIBLE
+    }
+
     override fun gotoHomeScreen() {
 
     }

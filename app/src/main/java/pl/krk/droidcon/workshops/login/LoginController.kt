@@ -1,5 +1,6 @@
 package pl.krk.droidcon.workshops.login
 
+import pl.krk.droidcon.workshops.R
 import rx.Observable
 import rx.Scheduler
 import rx.Subscription
@@ -13,7 +14,11 @@ class LoginController(private val api: Login.Api,
     private var subscription: Subscription? = null
 
     fun onLogin(email: String, password: String) {
-        if (email.isNotEmpty() && password.isNotEmpty()) {
+        if (email.isEmpty()) {
+            view.showError(R.string.emailErrorText)
+            return
+        }
+        if (password.isNotEmpty()) {
             subscription = api.login(email, password)
                     .handleLoader(view)
                     .subscribeOn(subscribeOnScheduler)

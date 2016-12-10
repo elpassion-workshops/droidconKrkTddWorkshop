@@ -9,6 +9,7 @@ interface Login {
 
     interface View {
         fun showError()
+        fun showError(errorMessageResId: Int)
         fun gotoHomeScreen()
         fun showLoader()
         fun hideLoader()

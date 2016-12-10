@@ -99,5 +99,10 @@ class LoginActivityTest {
         onId(R.id.loginProgress).isDisplayed()
     }
 
-
+    @Test
+    fun shouldHideLoaderWhenApiCallCompletesWithError(){
+        whenever(api.login(any(), any())) doReturn Observable.error(RuntimeException("some failure"))
+        onId(R.id.loginButton).click()
+        onId(R.id.loginProgress).isNotDisplayed()
+    }
 }

@@ -6,7 +6,7 @@ object LoginApiProvider {
     val realApi: Login.Api by lazy {
         object : Login.Api {
             override fun login(login: String, password: String): Observable<User> {
-                throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return Observable.error(RuntimeException("some failure"))
             }
         }
     }

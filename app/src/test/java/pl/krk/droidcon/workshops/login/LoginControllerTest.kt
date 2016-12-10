@@ -114,18 +114,24 @@ class LoginController(private val api: Login.Api, val view: Login.View) {
 
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
-            view.showLoader()
             subscription = api.login(email, password)
-                    .subscribe({ view.gotoHomeScreen() }, { view.showError() }, { view.hideLoader() })
+                    .handleLoader(view)
+                    .subscribe({
+                        view.gotoHomeScreen()
+                    }, {
+                        view.showError()
+                    })
         }
     }
 
     fun onDestroy() {
-        if (!(subscription?.isUnsubscribed ?: true)) {
-            view.hideLoader()
-        }
+        subscription?.unsubscribe()
     }
 }
+
+private fun <T> Observable<T>.handleLoader(view: Login.View) =
+        doOnSubscribe { view.showLoader() }
+                .doOnUnsubscribe { view.hideLoader() }
 
 interface Login {
     interface Api {

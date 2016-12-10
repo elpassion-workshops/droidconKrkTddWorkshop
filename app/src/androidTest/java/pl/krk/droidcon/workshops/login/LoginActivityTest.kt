@@ -85,4 +85,10 @@ class LoginActivityTest {
         onId(R.id.errorText)
                 .hasText(R.string.emailErrorText)
     }
+
+    @Test
+    fun shouldShowPasswordErrorWhenInvalidPasswordAndLoginButtonClicked() {
+        onId(R.id.errorText)
+                .hasText(R.string.passwordErrorText)
+    }
 }

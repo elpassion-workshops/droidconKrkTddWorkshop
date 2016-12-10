@@ -18,20 +18,20 @@ class LoginController(private val api: Login.Api,
             view.showError(R.string.emailErrorText)
             return
         }
-        if (password.isNotEmpty()) {
-            subscription = api.login(email, password)
-                    .handleLoader(view)
-                    .subscribeOn(subscribeOnScheduler)
-                    .observeOn(observeOnScheduler)
-                    .doOnNext { userStorage.saveUserData(it) }
-                    .subscribe({
-                        view.gotoHomeScreen()
-                    }, {
-                        view.showError()
-                    })
-        } else {
-            view.showError()
+        if (password.isEmpty()) {
+            view.showError(R.string.passwordErrorText)
+            return
         }
+        subscription = api.login(email, password)
+                .handleLoader(view)
+                .subscribeOn(subscribeOnScheduler)
+                .observeOn(observeOnScheduler)
+                .doOnNext { userStorage.saveUserData(it) }
+                .subscribe({
+                    view.gotoHomeScreen()
+                }, {
+                    view.showError()
+                })
     }
 
     fun onDestroy() {

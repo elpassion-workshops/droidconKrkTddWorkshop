@@ -3,6 +3,7 @@ package pl.krk.droidcon.workshops.login
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import rx.Observable
+import rx.Subscription
 
 class LoginControllerTest {
 
@@ -91,22 +92,34 @@ class LoginControllerTest {
 
     @Test
     fun shouldHideLoaderWhenControllerCallsOnDestroy() {
+        controller.onLogin("qwerty", "asdfgh")
         controller.onDestroy()
         verify(view).hideLoader()
+    }
+
+    @Test
+    fun shouldNotHideLoaderOnDestroyWhenNotShownBefore() {
+        controller.onDestroy()
+        verify(view, never()).hideLoader()
     }
 }
 
 class LoginController(private val api: Login.Api, val view: Login.View) {
+
+    private var  subscription: Subscription? = null
+
     fun onLogin(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             view.showLoader()
-            api.login(email, password)
+            subscription = api.login(email, password)
                     .subscribe({ view.gotoHomeScreen() }, { view.showError() }, { view.hideLoader() })
         }
     }
 
     fun onDestroy() {
-        view.hideLoader()
+        if (!(subscription?.isUnsubscribed ?: true)) {
+            view.hideLoader()
+        }
     }
 }
 

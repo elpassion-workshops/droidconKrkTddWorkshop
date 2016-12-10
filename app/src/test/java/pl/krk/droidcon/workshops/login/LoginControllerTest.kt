@@ -121,6 +121,14 @@ class LoginControllerTest {
         verify(view).hideErrorMessage()
     }
 
+    @Test
+    fun shouldUnsubscribeWhenOnDestroyIsInvoked() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        login()
+        controller.onDestroy()
+        verify(view).hideProgressLoader()
+    }
+
     private fun login(email: String = "email@test.pl", password: String = "password") {
         controller.onLogin(email, password)
     }
@@ -129,20 +137,25 @@ class LoginControllerTest {
 class LoginController(private val api: Login.Api, private val view: View) {
     fun onLogin(email: String, password: String) {
         if (isEmailValid(email) && password.isNotEmpty()) {
-            view.showProgressLoader()
-            view.hideErrorMessage()
-            api.login(email, password).subscribe({
+            api.login(email, password).doOnSubscribe {
+                view.showProgressLoader()
+                view.hideErrorMessage()
+            }.doOnUnsubscribe {
+                view.hideProgressLoader()
+            }.subscribe({
                 view.openNextScreen()
             }, {
                 view.showErrorMessage()
-            }, {
-                view.hideProgressLoader()
             })
         }
     }
 
     private fun isEmailValid(email: String) : Boolean {
         return email.matches(Regex(".*@.*\\..*"))
+    }
+
+    fun onDestroy() {
+        view.hideProgressLoader()
     }
 }
 

@@ -1,9 +1,11 @@
 package pl.krk.droidcon.workshops.login
 
 import android.support.test.espresso.Espresso
-import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers
+import android.support.test.espresso.matcher.ViewMatchers.withInputType
 import android.support.test.rule.ActivityTestRule
+import android.text.InputType
 import com.elpassion.android.commons.espresso.*
 import org.junit.Rule
 import org.junit.Test
@@ -21,7 +23,7 @@ class LoginActivityTest {
 
         // version without android.commons below
         Espresso.onView(ViewMatchers.withText(R.string.loginEmailHeader))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+                .check(matches(ViewMatchers.isDisplayed()))
     }
     
     @Test
@@ -37,6 +39,13 @@ class LoginActivityTest {
     @Test
     fun shouldPasswordHintBeVisible() {
         onText(R.string.loginPasswordHeader).isDisplayed()
+    }
+
+    @Test
+    fun shouldTextInPasswordInputBeMasked() {
+        onId(R.id.loginPasswordInput)
+                .typeText("secret")
+                .check(matches(withInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)))
     }
 
     private fun checkTypedTextIsDisplayedInInput(text: String, viewId: Int) {

@@ -8,6 +8,7 @@ import com.elpassion.android.commons.espresso.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pl.krk.droidcon.workshops.R
@@ -21,15 +22,19 @@ class LoginActivityTest {
     @JvmField
     val rule = ActivityTestRule(LoginActivity::class.java, false, false)
 
+    @Before
+    fun setUp() {
+        LoginApiProvider.override = api
+        rule.launchActivity(null)
+    }
+
     @Test
     fun shouldEmailHintBeVisible() {
-        startActivity()
         onText(R.string.loginEmailHeader).isDisplayed()
     }
 
     @Test
     fun shouldHaveTypedEmailInTheInput() {
-        startActivity()
         onId(R.id.loginEmailInput)
                 .isDisplayed()
                 .typeText("email@test.pl")
@@ -38,13 +43,11 @@ class LoginActivityTest {
 
     @Test
     fun shouldPasswordHintBeVisible() {
-        startActivity()
         onText(R.string.loginPasswordHeader).isDisplayed()
     }
 
     @Test
     fun shouldHaveTypedPasswordInTheInput() {
-        startActivity()
         onId(R.id.loginPasswordInput)
                 .isDisplayed()
                 .typeText("abcdef19")
@@ -53,7 +56,6 @@ class LoginActivityTest {
 
     @Test
     fun shouldTypedPasswordBeStarred() {
-        startActivity()
         onId(R.id.loginPasswordInput)
                 .typeText("abcdef19")
                 .check(matches(withInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)))
@@ -61,19 +63,20 @@ class LoginActivityTest {
 
     @Test
     fun shouldLoginButtonBeEnabled() {
-        startActivity()
         onId(R.id.loginButton).isEnabled()
     }
 
     @Test
     fun shouldShowErrorWhenLoginFails() {
         whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
-        startActivity()
         onId(R.id.loginButton).click()
         onId(R.id.loginError).isDisplayed()
     }
 
-    private fun startActivity() {
-        rule.launchActivity(null)
+    @Test
+    fun shouldNotShowErrorWhenLoginPass() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(User("1")))
+        onId(R.id.loginButton).click()
+        onId(R.id.loginError).isNotDisplayed()
     }
 }

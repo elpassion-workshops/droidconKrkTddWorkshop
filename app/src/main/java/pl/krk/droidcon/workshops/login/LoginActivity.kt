@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.View.GONE
 import kotlinx.android.synthetic.main.login_activity.loginButton
 import kotlinx.android.synthetic.main.login_activity.loginError
+import kotlinx.android.synthetic.main.login_activity.loginProgress
 import pl.krk.droidcon.workshops.R
 import rx.schedulers.Schedulers
 
@@ -35,5 +37,6 @@ class LoginActivity : AppCompatActivity(), Login.View {
     }
 
     override fun hideLoader() {
+        loginProgress.visibility = GONE
     }
 }

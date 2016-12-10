@@ -31,4 +31,9 @@ class LoginActivityTest {
                 .typeText("email@test.pl")
                 .hasText("email@test.pl")
     }
+
+    @Test
+    fun shouldPasswordHintBeVisible() {
+        onText(R.string.loginPasswordHeader).isDisplayed()
+    }
 }

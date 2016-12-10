@@ -6,17 +6,18 @@ import org.junit.Test
 
 class LoginControllerTest {
 
+    private val api = mock<Login.Api>()
+    private val controller = LoginController(api)
+
     @Test
     fun shouldCallApiWithProvidedEmail() {
-        val api = mock<Login.Api>()
-        LoginController(api).onLogin("email@test.pl")
+        controller.onLogin("email@test.pl")
         verify(api).login("email@test.pl")
     }
 
     @Test
     fun shouldReallyCallApiWithProvidedEmail() {
-        val api = mock<Login.Api>()
-        LoginController(api).onLogin("email2@test.pl")
+        controller.onLogin("email2@test.pl")
         verify(api).login("email2@test.pl")
     }
 }

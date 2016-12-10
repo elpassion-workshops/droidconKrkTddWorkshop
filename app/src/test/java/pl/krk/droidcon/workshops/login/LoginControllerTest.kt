@@ -24,6 +24,12 @@ class LoginControllerTest {
     }
 
     @Test
+    fun shouldNotCallApiWhenEmailIsInvalid() {
+        doLogin(email = "emailtest.pl")
+        verifyLoginNotCalled()
+    }
+
+    @Test
     fun shouldNotCallApiWhenPasswordEmpty() {
         doLogin(password = "")
         verifyLoginNotCalled()
@@ -40,9 +46,16 @@ class LoginControllerTest {
 
 class LoginController(private val api: Login.Api) {
     fun onLogin(email: String, password: String) {
-        if (email.isNotEmpty() && password.isNotEmpty()) {
-            api.login(email, password)
+        if (password.isEmpty()) {
+            return
         }
+        if (email.isEmpty()) {
+            return
+        }
+        if (!email.contains("@")) {
+            return
+        }
+        api.login(email, password)
     }
 }
 

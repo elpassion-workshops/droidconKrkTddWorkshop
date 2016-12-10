@@ -7,12 +7,14 @@ import rx.Observable
 class LoginControllerTest {
 
     private val api = mock<Login.Api>()
+    private val storage = mock<Login.Storage>()
     private val view = mock<Login.View>()
-    private val controller = LoginController(api, view)
+    private val controller = LoginController(api, storage, view)
+    private val user = User(token = "droicon krakow rulez!")
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
         verify(api).login("email@test.pl", "mypass")
         verify(view).showLoadProgress()
@@ -21,7 +23,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldReallyCallApiWithProvidedEmail() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
         verify(api).login("email@test.pl", "mypass")
         verify(view).showLoadProgress()
@@ -40,7 +42,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedPassword() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
         verify(api).login("email@test.pl", "mypass")
     }
@@ -72,7 +74,7 @@ class LoginControllerTest {
 
     @Test
     fun shouldNotShowErrorMessageOnSuccessfulLogin() {
-        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
         login()
         verify(view, never()).showError(any())
         verify(view).showLoadProgress()
@@ -94,5 +96,26 @@ class LoginControllerTest {
         login()
         controller.onDestroy()
         verify(view).hideLoadProgress()
+    }
+
+    @Test
+    fun shouldOpenMainScreenAfterSuccessfulLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
+        login()
+        verify(view).showMainScreen()
+    }
+
+    @Test
+    fun shouldStoreUserInPersistentStoreAfterSuccessfulLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(user))
+        login()
+        verify(storage).setUser(user)
+    }
+
+    @Test
+    fun shouldNotStoreUserInPersistentStoreAfterFailedLogin() {
+        whenever(api.login(any(), any())).thenReturn(Observable.error(RuntimeException()))
+        login()
+        verify(storage, never()).setUser(user)
     }
 }

@@ -69,6 +69,12 @@ class LoginControllerTest {
         verify(view, never()).showError()
     }
 
+    @Test
+    fun shouldShowLoaderWhenLoginAttempted() {
+        whenever(api.login(any(), any())).thenReturn(Observable.just(Unit))
+        doLogin()
+        verify(view).showLoader()
+    }
 
     private fun doLogin(email: String = "email@test.pl", password : String = "password") {
         controller.onLogin(email, password)

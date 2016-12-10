@@ -16,4 +16,7 @@ class LoginActivity : AppCompatActivity(), Login.View {
     override fun showError() {
         throw UnsupportedOperationException("not implemented")
     }
+    override fun showLoader() {
+        throw UnsupportedOperationException("not implemented")
+    }
 }

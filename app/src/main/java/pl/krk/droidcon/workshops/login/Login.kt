@@ -10,5 +10,6 @@ interface Login {
     interface View {
         fun openNextScreen()
         fun showError()
+        fun showLoader()
     }
 }

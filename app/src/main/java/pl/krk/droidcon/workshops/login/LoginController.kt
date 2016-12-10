@@ -8,6 +8,7 @@ class LoginController(private val api: Login.Api, private val view : Login.View)
         if (password.isEmpty() || !email.isEmailValid()) {
             return
         }
+        view.showLoader()
         api.login(email, password).subscribe(
                 {view.openNextScreen()},
                 {view.showError()})

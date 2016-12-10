@@ -1,9 +1,6 @@
 package pl.krk.droidcon.workshops.login
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 
 class LoginControllerTest {
@@ -13,33 +10,39 @@ class LoginControllerTest {
 
     @Test
     fun shouldCallApiWithProvidedEmail() {
-        controller.onLogin("email@test.pl")
-        verify(api).login("email@test.pl")
+        controller.onLogin("email@test.pl", "password")
+        verify(api).login(eq("email@test.pl"), any())
     }
 
     @Test
     fun shouldReallyCallApiWithProvidedEmail() {
-        controller.onLogin("email2@test.pl")
-        verify(api).login("email2@test.pl")
+        controller.onLogin("email2@test.pl", "password")
+        verify(api).login(eq("email2@test.pl"), any())
     }
 
     @Test
     fun shouldNotCallApiWhenEmailIsEmpty() {
-        controller.onLogin(email = "")
-        verify(api, never()).login(any())
+        controller.onLogin(email = "", password = "password")
+        verify(api, never()).login(any(), any())
+    }
+
+    @Test
+    fun shouldCallApiWithProvidedPassword() {
+        controller.onLogin("email@test.pl", "password")
+        verify(api).login(any(), eq("password"))
     }
 }
 
 class LoginController(private val api: Login.Api) {
-    fun onLogin(email: String) {
+    fun onLogin(email: String, password: String) {
         if (email.isNotEmpty()) {
-            api.login(email)
+            api.login(email, password)
         }
     }
 }
 
 interface Login {
     interface Api {
-        fun login(s: String)
+        fun login(s: String, password: String)
     }
 }

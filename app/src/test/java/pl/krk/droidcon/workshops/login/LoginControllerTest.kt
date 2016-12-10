@@ -104,6 +104,13 @@ class LoginControllerTest {
         verify(view).hideLoader()
     }
 
+    @Test
+    fun shouldNotHideLoaderOnNeverEndingCall() {
+        whenever(api.login(any(), any())).thenReturn(Observable.never())
+        login()
+        verify(view, never()).hideLoader()
+    }
+
     private fun login(email: String = "asd@test.pl", password: String = "password") {
         controller.onLogin(email = email, password = password)
     }
@@ -117,8 +124,9 @@ class LoginController(private val api: Login.Api, private val view: Login.View) 
                 view.showLoader()
                 api.login(email, password).subscribe({
                     view.openNextScreen()
-                }, {view.showLoginFailed()})
-                view.hideLoader()
+                }, {view.showLoginFailed()
+                }, {view.hideLoader()})
+
             }
         }
         else {
